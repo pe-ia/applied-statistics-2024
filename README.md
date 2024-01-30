@@ -29,7 +29,7 @@ The contributors of this project reserve all rights.
 
 This compendium is based on the textbook "Introduction to Statistical Data Analysis for the Life Sciences" by Claus Thorn Ekstrøm and Helle Sørensen. No content is directly taken from the book.
 
-The contributor @niclejeune, contributed directly through the Overleaf share function. He contributed a substantial part of this compendium, but all commits were made through my github.
+The contributor https://github.com/niclejeune, contributed directly through the Overleaf share function. He contributed a substantial part of this compendium, but all commits were made through my github.
 
 ## Disclaimer
 
