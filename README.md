@@ -15,11 +15,13 @@ Overleaf premium comes free with your ITU email. If you sign up for at https://w
 
 ## Contributing
 
-Contributions to this compendium are welcome! If you have suggestions for improvements or corrections, feel free to open an issue. If you wish to contribute:
+Contributions to this compendium are welcome! If you have suggestions for improvements or corrections, feel free to open an issue. If you wish to contribute, please reach out to us on Discord first so we can coordinate, but you can:
 
 1. Fork this repository.
 2. Make your changes. You can add it to Overleaf by linking your GitHub account and selecting your forked repository.
 3. Submit a pull request with a description of your improvements.
+
+Or you can ask to get added directly to the Overleaf.
 
 ## License
 
