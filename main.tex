@@ -1,9 +1,43 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath} % Math
+\usepackage{listings} % Required for inserting code
+\usepackage{xcolor}   % Required for custom colors
+\usepackage{color}
+\usepackage{svg}    % Required for rendering svgs
+\usepackage{float}
 
 \title{Applied Statistics}
 \author{Nicolas Lejeune, Peter Iatsenia}
 \date{Spring 2024}
+
+% Define colors similar to RStudio
+\definecolor{codegreen}{rgb}{0,0.5,0}    % Comments in a green color
+\definecolor{codegray}{rgb}{0.5,0.5,0.5} % Code-gray for numbers
+\definecolor{codepurple}{rgb}{0,0.6,0} % Strings in green color
+\definecolor{backcolour}{rgb}{1,1,1}     % White background color
+\definecolor{codeblue}{rgb}{0,0,0}       % Blue for keywords
+
+% R language lstset configuration
+\lstset{
+    language=R,                  % The language of the code
+    basicstyle=\ttfamily\small,  % The style that is used for the code
+    backgroundcolor=\color{backcolour}, % Set the background color for the snippet
+    commentstyle=\color{codegreen},    % Comment style
+    keywordstyle=\color{codeblue},     % Keyword style
+    numberstyle=\tiny\color{codegray}, % The style that is used for the line numbers
+    stringstyle=\color{codepurple},    % String literal style
+    breakatwhitespace=false,           % Sets if automatic breaks should only happen at whitespace
+    breaklines=true,                   % Sets automatic line breaking
+    captionpos=b,                      % Sets the caption-position to bottom
+    keepspaces=true,                   % Keeps spaces in text, useful for keeping indentation of code
+    numbers=left,                      % Where to put the line numbers
+    numbersep=5pt,                     % How far the line numbers are from the code
+    showspaces=false,                  % Show spaces everywhere adding particular underscores
+    showstringspaces=false,            % Underline spaces within strings only
+    showtabs=false,                    % Show tabs within strings adding particular underscores
+    tabsize=2                          % Sets default tabsize to 2 spaces
+}
 
 \begin{document}
 
@@ -14,11 +48,251 @@
 \pagebreak
 
 \section*{Preface}
-This is a compressed note compendium based on the textbook: "Introduction to Statistical Data Analysis for the Life Sciences", Claus Thorn Ekstrøm \& Helle Sørensen, 2nd edition, 2015." For public use for students following the Applied Statistics course.
+This is a compressed note compendium based on the textbook: "Introduction to Statistical Data Analysis for the Life Sciences", Claus Thorn Ekstrøm \& Helle Sørensen, 2nd edition, 2015." For public use for students following the Spring 2024 Applied Statistics course.
 
 \section{Description of samples and populations}
 
-\subsection{Data Types}
+\paragraph{}
+Statistics involves using a sample, a subset of a larger population, to make inferences about the overall characteristics of that population. A population represents the complete set of subjects we want to study, while a sample is a smaller, representative group selected from this population. The key concepts are:
 
+\begin{itemize}
+    \item \textbf{Population}: The entire group of interest whose properties we want to analyze.
+    \item \textbf{Sample}: A smaller, representative group drawn from the population.
+    \item \textbf{Parameter}: A numerical value describing a characteristic of the entire population.
+    \item \textbf{Statistic}: A numerical value describing a characteristic of the sample.
+\end{itemize}
+
+The process starts with selecting a sample from the population (sampling) and then using statistical methods to draw conclusions (statistical inference) about the population based on the sample data. For example, to estimate the average height of a population (a parameter), we measure the average height of a sample group. This sample average (a statistic) is then used to infer the population's average height. The course focuses on methods to make accurate inferences about population parameters using sample statistics. Whether a group is considered a population or a sample depends on the context and the type of inference being made.
+
+\subsection{Data Types}
+\paragraph{}
+The data collected in a study dictates the statistical analysis approach, influencing the hypotheses that can be tested and the predictive models that can be used. Data can be broadly categorized into two types:
+
+\begin{itemize}
+    \item \textbf{Categorical Data}: This type includes non-numeric categories or groups.
+    \item \textbf{Quantitative Data}: This type consists of numerical measurements or quantities.
+\end{itemize}
+The nature of the data (categorical or quantitative) is key in determining the appropriate statistical methods and models for analysis and prediction.
+
+\subsubsection{Categorical data}
+
+Categorical data sorts observations into groups based on qualitative traits, resulting in labels or categories. There are two subtypes:
+
+\begin{itemize}
+    \item \textbf{Nominal Data}: These categories have no natural order. Examples include hair color, gender, race, and smoking status. For instance, hair colors (brown, blonde, gray) are merely different without any inherent ranking.
+    \item \textbf{Ordinal Data}: These categories have a natural order. Examples include pain levels (none, little, heavy) or income brackets (low, middle, high). While we can rank these categories (e.g., low income is less than high income), the actual difference between them isn't quantifiable. For example, the gap between low and middle income isn't necessarily the same as that between middle and high income.
+\end{itemize}
+
+The key distinction is that ordinal data has a rank order, but the magnitude of difference between categories isn't measurable or consistent.
+
+\subsubsection{Quantitative data}
+
+Quantitative data are numerical and fall into two categories:
+
+\begin{itemize}
+    \item \textbf{Discrete Quantitative Data}: These are countable numbers, representing finite possible values. They accurately reflect counts, like household size or number of kittens in a litter. Differences between values have a clear quantitative interpretation (e.g., the difference between 9 and 7 households is the same as between 5 and 3 households).
+    \item \textbf{Continuous Quantitative Data}: Representing measurements like length, volume, time, mass, etc., these are ideally continuous and gapless. While theoretically continuous, practical limitations often lead to less detailed measurements (e.g., measuring time in days instead of seconds). Despite not being measured with infinite precision, treating these variables as continuous is generally appropriate.
+\end{itemize}
+
+Categorical data are summarized by frequencies or proportions in each category, whereas quantitative data are typically summarized using averages or means.
+
+In the Danscher et al. (2009) study on acute laminitis in cattle, different data types were used:
+
+\begin{itemize}
+    \item \textbf{Location (Nominal Data)}: Non-ordered categories (I or II).
+    \item \textbf{Weight (Continuous Quantitative Data)}: Reported in whole kilograms, with meaningful differences.
+    \item \textbf{Lameness Score (Ordinal Data)}: Ranked (normal to severely lame).
+    \item \textbf{Number of Swelled Joints (Discrete Quantitative Data)}: Countable numeric values.
+\end{itemize}
+This study exemplifies the integration of various data types in research.
+
+\subsection{Visualizing categorical data}
+\paragraph{}
+Categorical data can be represented in many ways, these are listed below:
+
+\begin{itemize}
+    \item \textbf{Frequency tables}: for listing category occurrences; ideal for fewer categories.
+    \item \textbf{Bar charts/graphs}: for larger categories or cross-population comparison.
+    \item \textbf{Segmented bar charts}: Display relative frequencies as parts of a whole. Useful for comparing category distributions across populations.
+\end{itemize}
+
+\paragraph{}
+There are also some important definitions regarding categorical data:
+
+\begin{itemize}
+    \item \textbf{Frequency}: Count of each category's occurrence.
+    \item \textbf {Relative frequency}: Frequency divided by total observations; enables comparison across different-sized datasets. \text{Relative Frequency} = $\frac{\text{frequency}}{n}$
+\end{itemize}
+
+
+
+
+
+
+\subsection{Visualizing quantitative data}
+\paragraph{}
+Data visualization is crucial for understanding and interpreting categorical and quantitative data. For categorical variables or discrete quantitative data with limited values, frequency or relative frequency plots are effective. However, for continuous quantitative data, these plots become less informative due to the vast number of unique values. Instead, we use histograms, grouping data into bins, and counting observations per bin. This approach effectively represents the data's distribution, showing the center, spread, and modes.
+
+\subsubsection*{Histograms and Relative Frequency Histograms}
+\paragraph{}
+Histograms, akin to bar charts for categorical data, display the count of observations in each bin. Relative frequency histograms, on the other hand, show the proportion of observations per bin, making it easier to compare different populations. The shape of a relative frequency histogram mirrors that of a standard histogram, differing only in scale. It's important to note that the histogram's accuracy depends on equal bin widths; unequal widths can distort the representation of frequencies.
+
+\subsubsection*{Scatter Plots for Quantitative Variables}
+\paragraph{}
+For illustrating relationships between two quantitative variables, scatter plots are employed. These plots reveal the strength, shape (linear, curved, etc.), and direction (positive or negative) of the relationship between variables. They also help identify outliers or extreme observations. When one variable is under experimental control, it's designated as the explanatory variable and typically plotted on the x-axis, with the response variable on the y-axis. If there's no clear explanatory variable, the choice of axes is flexible, with the scatter plot highlighting correlation rather than causation.
+
+\subsubsection*{Case Study: Tenderness of Pork}
+\paragraph{}
+An experiment compared two cooling methods (tunnel and rapid cooling) for pork from two groups (low and high pH). The tenderness of the pork was measured post-cooling. Data analysis included histograms and relative frequency histograms for each pH group, allowing comparison of tenderness distributions between the low- and high-pH groups. Additionally, scatter plots depicted the relationship between the tenderness scores from both cooling methods, showcasing the practical application of these visualization techniques in interpreting interactions between two quantitative variables.
+
+
+\subsection{Statistical summaries}
+
+Categorical data are effectively summarized using tables. For quantitative data, which don't fit fixed categories, binning the data like in histograms is an option, but this can lose detail and depends heavily on bin choices. Instead, summary statistics are preferred. The measure of central tendency, like an average, represents the data's "middle" value, indicating a typical observation. However, as different datasets can have the same central tendency, it's also crucial to assess the data's variability or dispersion. This shows how much data points deviate from the central value, giving a fuller understanding of the data's spread and overall distribution.
+
+\subsubsection{Median and inter-quartile range}
+
+In a sample with $n$ independent, quantitative observations $(y_1,...,y_n)$, these can be ordered from smallest to largest, denoted as $y_1,...,y_n$ where $y_1$ is the smallest, $y_2$ is the second smallest, and so on.
+
+The median, a central tendency measure, is the middle value in this ordered set. For an odd number of observations $(n)$, it's $y_{(\frac{n+1}{2})}$; for an even $n$, it's $\frac{1}{2}[y_{(n/2)}+y_{(n/2+1)}]$. The median applies to both quantitative and ordinal categorical data.
+
+The range, a basic dispersion measure, is the difference between the highest and lowest values $(y_n-y_1)$. However, the range only considers two values and can be misleading. For example, three datasets with the same range can have very different dispersions.
+
+\begin{itemize}
+    \item Dataset 1: 14, 14, 14, 14, 14, 14, 34
+    \item Dataset 2: 14, 16, 19, 22, 26, 30, 34
+    \item Dataset 3: 14, 14, 14, 34, 34, 34, 34
+\end{itemize}
+All have a range of 20, but their distributions vary significantly.
+
+The interquartile range (IQR) is a more nuanced dispersion measure. It's calculated by removing the top and bottom 25\% of observations and then finding the range of the remaining 50\%. Denoted as $IQR=Q3-Q1$, where $Q1$ and $Q3$ are the first and third quartiles, respectively, IQR is less affected by extreme values.
+
+Quartiles are specific examples of quantiles, which divide ordered data into equal-sized subsets. The $x$th quantile is the value below which $x\%$ of the data falls.  The 25th and 75th quantiles are the first and third quartiles, respectively, and the 50th quantile is the median, dividing the data into four equal parts. Though exact quantile calculation can vary slightly in finite datasets, the interpretation remains consistent.
+
+\subsubsection{Boxplot}
+\textbf{Boxplot Overview}
+\begin{itemize}
+    \item Summarizes data with five key statistics: minimum, $Q1$, median, $Q3$, and maximum.
+    \item Box represents the IQR, median is shown as a central line, and whiskers extend to the minimum and maximum values.
+    \item Useful for assessing distribution, including symmetry and skewness.
+\end{itemize}
+
+\textbf{Outlier Detection Using IQR}
+\begin{itemize}
+    \item Outliers are defined as observations beyond $Q1 - 1.5 \cdot IQR$ or $Q3 + 1.5 \cdot IQR$.
+    \item Crucial for recognizing anomalous data points that may affect the analysis.
+\end{itemize}
+
+\textbf{Modified Boxplot Representation}
+\begin{itemize}
+    \item Shows outliers as individual points, with minimum and maximum defined within the interval $[Q1 - 1.5 \cdot IQR, Q3 + 1.5 \cdot IQR]$.
+    \item Allows for clearer visualization of extreme values, aiding in comparative distribution analysis.
+\end{itemize}
+
+\textbf{R Code for Boxplots and Modified Boxplots}
+
+\begin{lstlisting}
+# Example data: A sample of quantitative observations
+observations <- c(22, 26, 24, 19, 23, 27, 28, 18, 30, 40, 15)  # Replace with actual data
+
+# Standard Boxplot
+boxplot(observations, 
+        main = "Standard Boxplot", 
+        ylab = "Values",
+        xlab = "Data",
+        range=0) # range=0 extends whiskers to mimimum and maximum values
+
+# Modified Boxplot
+boxplot(observations, 
+        main = "Modified Boxplot", 
+        ylab = "Values",
+        xlab = "Data")
+\end{lstlisting}
+
+\subsubsection{The mean and standard deviation}
+The mean and standard deviation are key measures for quantitative data:
+
+\begin{itemize}
+    \item \textbf{Mean}: The mean (denoted as $\bar{y}$) is the average of a sample's observations. It's calculated by $\bar{y}=\frac{\sum_{i=1}^{n} {y_i}}{n}$ 
+    \item \textbf{Standard Deviation}:  This measures the dispersion or how much the observations typically deviate from the mean.
+    It's defined as: $s=\sqrt{\frac{\sum_{i=1}^{n} ({y_i-\bar{y}})^2}{n-1}}$
+    \item \textbf{Variance}: Represented as $s^2$, it's the square of the standard deviation: $s^2=\frac{\sum_{i=1}^{n} ({y_i-\bar{y}})^2}{n-1}$
+\end{itemize}
+
+Both the mean and standard deviation incorporate information from all observations, providing a more comprehensive view than the median and inter-quartile range. They are expressed in the same units as the original data, enabling direct interpretation in the context of the observed values.
+
+\pagebreak
+
+\textbf{R Code for Mean, Standard Deviation, and Variance}
+
+\begin{lstlisting}
+# Example data: A sample of quantitative observations
+observations <- c(5, 10, 15, 20, 25)  # Replace with actual data
+
+# Calculate the mean
+mean_value <- mean(observations)
+# The 'mean' function calculates the average of the observations
+
+# Calculate the standard deviation
+std_dev <- sd(observations)
+# The 'sd' function calculates the standard deviation, 
+# which measures the average deviation from the mean
+
+# Calculate the variance
+variance_value <- var(observations)
+# The 'var' function calculates the variance (standard deviation squared)
+# Variance measures how spread out the numbers are from the mean
+
+# Print the results
+print(paste("Mean:", mean_value))
+print(paste("Standard Deviation:", std_dev))
+print(paste("Variance:", variance_value))
+
+\end{lstlisting}
+
+\textbf{Sample mean and standard deviation of linearly transformed data}
+
+Let $\bar{y}$ and $s$ be the sample mean and sample standard deviation from observations $y_1,...,y_n$ and let $y_{i}'=c \cdot y_{i} + b$ be a linear transformation of the $y$'s with constraints $b$ and $c$. Then $\bar{y'} = c \cdot \bar{y}+b$ and $s'=|c|\cdot s$.
+
+\subsubsection{Mean or median?}
+The median divides the data into two parts with an equal number of observations or equal areas under the histogram, disregarding the actual distances from the center. The mean also partitions the data into two halves, but it considers the values' distance from the center, making it sensitive to extreme values. 
+
+\textbf{Sensitivity to Extreme Values}
+\begin{itemize}
+    \item The median is robust against extreme values, relying only on the two middle observations.
+    \item The mean is influenced by all observations, making it susceptible to extreme values.
+\end{itemize} 
+
+\textbf{Mathematical Properties and Usage}
+\begin{itemize}
+    \item The mean has desirable mathematical properties, aiding in proving theorems and inferential statistics.
+    \item The median is more robust but mathematically more challenging to work with.
+    \item The mean is preferred for symmetric data except in the presence of extreme values, where the median is more suitable.
+    \item The central limit theorem supports the use of sample means as symmetric estimates, regardless of the original distribution, given a large sample size.
+\end{itemize}
+
+\textbf{R Code Examples}
+\begin{lstlisting}
+# Example data: A sample of quantitative observations
+observations <- c(5, 56, 16, 32, 25)  # Replace with actual data
+
+# Calculate the mean
+mean_value <- mean(observations)
+
+# Calculate the median
+median_value <- median(observations)
+\end{lstlisting}
+
+\subsection{What is a probability?}
+
+Probability is the likelihood of a random event occurring and is based on the concept of relative frequency in large numbers of experiments.
+
+When conducting random experiments, such as rolling a die or measuring daily milk production from cows, the outcomes can vary each time. This variability is intrinsic to random events. For example, the occurrence of an even number on a die roll is a basic type of random event. If we denote this event as A and perform a large number of die rolls (denoted as $n$), he relative frequency of A $(n_A/n)$, which is the number of times A occurs divided by the total number of rolls, provides an empirical estimate of the probability of A.
+
+As the number of trials $n$ increases, the relative frequency tends to stabilize. This stabilized value, approached as $n$ becomes very large, is considered the probability of the event.
+
+For instance, in an experiment involving throwing a thumbtack 100 times and observing whether the pin points up or down, the relative frequency of the pin pointing down stabilizes around a certain value as the number of throws increases. This stabilization point, observed empirically, is interpreted as the probability of the thumbtack landing pin-down. In the thumbtack example, the probability was found to be approximately 0.6 or 60%.
+
+This example illustrates how probability is derived from the relative frequency of an event in a large number of trials, reflecting the likelihood of that event occurring in a given random experiment.
 
 \end{document}
