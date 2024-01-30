@@ -6,6 +6,8 @@
 \usepackage{color}
 \usepackage{svg}    % Required for rendering svgs
 \usepackage{float}
+\usepackage{amssymb}
+\usepackage{amsthm}
 
 \title{Applied Statistics}
 \author{Nicolas Lejeune, Peter Iatsenia}
@@ -221,6 +223,10 @@ The mean and standard deviation are key measures for quantitative data:
 
 Both the mean and standard deviation incorporate information from all observations, providing a more comprehensive view than the median and inter-quartile range. They are expressed in the same units as the original data, enabling direct interpretation in the context of the observed values.
 
+\textbf{Why do we divide by n-1?}
+
+Using the $n-1$ denominator compensates for the loss of a degree of freedom. When we know the mean $\bar x$, we loose a degree of freedom of information, because once we know $n-1$ deviations, we know the $n$'th deviation (as all the deviations should sum to 0), thus the $n$'th deviation is dependent. If we were using $n$ as a denominator, we'd be assuming that all the deviations are independent, which is not the case, causing a biased estimation.
+
 \pagebreak
 
 \textbf{R Code for Mean, Standard Deviation, and Variance}
@@ -294,5 +300,79 @@ As the number of trials $n$ increases, the relative frequency tends to stabilize
 For instance, in an experiment involving throwing a thumbtack 100 times and observing whether the pin points up or down, the relative frequency of the pin pointing down stabilizes around a certain value as the number of throws increases. This stabilization point, observed empirically, is interpreted as the probability of the thumbtack landing pin-down. In the thumbtack example, the probability was found to be approximately 0.6 or 60%.
 
 This example illustrates how probability is derived from the relative frequency of an event in a large number of trials, reflecting the likelihood of that event occurring in a given random experiment.
+\pagebreak
+
+\subsection{Proofs}
+\subsubsection*{Proof that the Sample Variance is an Unbiased Estimator of the Population Variance}
+Let $X_1, X_2, \ldots, X_n$ be a random sample from a population with variance $\sigma^2$. The sample variance $S^2$ is defined as:
+
+\[
+E(S^2) = \frac{1}{n-1} E(\sum_{i=1}^{n} (X_i - \bar{X})^2)
+\]
+
+Where $\bar{X}$ is the sample mean:
+
+\[
+\bar{X} = \frac{1}{n} \sum_{i=1}^{n} X_i
+\]
+
+To prove that the sample variance is an unbiased estimator of the population variance, we need to show that:
+
+\[
+E(S^2) = \sigma^2
+\]
+
+\begin{proof}
+\hfill \break
+\hfill \break
+Let's start by expanding $E(\sum_{i=1}^{n} (X_i - \bar{X})^2)$:
+\[
+E(\sum_{i=1}^{n} (X_i - \bar{X})^2) = E((\sum_{i=1}^{n} (X_i^2)) - 2\bar{X}(\sum_{i=1}^{n} (X_i)) + (\sum_{i=1}^{n} (\bar{X^2}))
+\]
+
+This is equivalent to
+\[
+E((\sum_{i=1}^{n} (X_i)) - 2\bar{X}(\sum_{i=1}^{n} (X_i)) + n\bar{X^2}
+\]
+
+If we consider $\bar{X} = \frac{(\sum_{i=1}^{n} (X_i)}{n}$ then,
+\[
+\sum_{i=1}^{n} (X_i) = n\bar{X}
+E((\sum_{i=1}^{n} (X_i)) - 2\bar{X}(\sum_{i=1}^{n} (X_i)) + n\bar{X^2} = E((\sum_{i=1}^{n} (X_i)) - 2\bar{X}\bar{X}n + n\bar{X^2}
+\]
+
+\[
+= E((\sum_{i=1}^{n} (X_i)) - n\bar{X^2}))
+\]
+
+From here we can rewrite this equation as
+\[
+\sum_{i=1}^{n} (E(X_i) - nE(\bar{X^2}))
+\]
+
+We know that
+\[
+E(X_i^2) = \sigma^2 + \mu^2
+\]
+
+\[
+E(\bar{X^2}) = \frac{\sigma^2}{n} + \mu^2
+\]
+
+This can be subbed into the equation above to find
+\[
+\sum_{i=1}^{n} (\sigma^2 + \mu^2 - n(\frac{\sigma^2}{n} + \mu^2)) = n\sigma^2 + n\mu^2 - \sigma^2 - n\mu^2
+\]
+
+\[
+= (n-1)\sigma^2
+\]
+
+If we sub this back into the equation for $E(S^2)$, in place of $E(\sum_{i=1}^{n} (X_i - \bar{X})^2)$ then
+\[
+E(S^2) = \frac{1}{n-1}(n - 1)\sigma^2 = \sigma^2
+\]
+\end{proof}
+
 
 \end{document}
