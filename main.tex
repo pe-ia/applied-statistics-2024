@@ -8,6 +8,7 @@
 \usepackage{float}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{hyperref}
 
 \title{Applied Statistics}
 \author{Nicolas Lejeune, Peter Iatsenia}
@@ -51,6 +52,8 @@
 
 \section*{Preface}
 This is a compressed note compendium based on the textbook: "Introduction to Statistical Data Analysis for the Life Sciences", Claus Thorn Ekstrøm \& Helle Sørensen, 2nd edition, 2015." For public use for students following the Spring 2024 Applied Statistics course.
+
+All R Code is also available at the \href{https://github.com/palpatine/applied-statistics-2024}{github repository} in r/.
 
 \section{Description of samples and populations}
 
@@ -191,26 +194,6 @@ Quartiles are specific examples of quantiles, which divide ordered data into equ
     \item Allows for clearer visualization of extreme values, aiding in comparative distribution analysis.
 \end{itemize}
 
-\textbf{R Code for Boxplots and Modified Boxplots}
-
-\begin{lstlisting}
-# Example data: A sample of quantitative observations
-observations <- c(22, 26, 24, 19, 23, 27, 28, 18, 30, 40, 15)  # Replace with actual data
-
-# Standard Boxplot
-boxplot(observations, 
-        main = "Standard Boxplot", 
-        ylab = "Values",
-        xlab = "Data",
-        range=0) # range=0 extends whiskers to mimimum and maximum values
-
-# Modified Boxplot
-boxplot(observations, 
-        main = "Modified Boxplot", 
-        ylab = "Values",
-        xlab = "Data")
-\end{lstlisting}
-
 \subsubsection{The mean and standard deviation}
 The mean and standard deviation are key measures for quantitative data:
 
@@ -228,33 +211,6 @@ Both the mean and standard deviation incorporate information from all observatio
 Using the $n-1$ denominator compensates for the loss of a degree of freedom. When we know the mean $\bar x$, we loose a degree of freedom of information, because once we know $n-1$ deviations, we know the $n$'th deviation (as all the deviations should sum to 0), thus the $n$'th deviation is dependent. If we were using $n$ as a denominator, we'd be assuming that all the deviations are independent, which is not the case, causing a biased estimation.
 
 \pagebreak
-
-\textbf{R Code for Mean, Standard Deviation, and Variance}
-
-\begin{lstlisting}
-# Example data: A sample of quantitative observations
-observations <- c(5, 10, 15, 20, 25)  # Replace with actual data
-
-# Calculate the mean
-mean_value <- mean(observations)
-# The 'mean' function calculates the average of the observations
-
-# Calculate the standard deviation
-std_dev <- sd(observations)
-# The 'sd' function calculates the standard deviation, 
-# which measures the average deviation from the mean
-
-# Calculate the variance
-variance_value <- var(observations)
-# The 'var' function calculates the variance (standard deviation squared)
-# Variance measures how spread out the numbers are from the mean
-
-# Print the results
-print(paste("Mean:", mean_value))
-print(paste("Standard Deviation:", std_dev))
-print(paste("Variance:", variance_value))
-
-\end{lstlisting}
 
 \textbf{Sample mean and standard deviation of linearly transformed data}
 
@@ -277,18 +233,6 @@ The median divides the data into two parts with an equal number of observations 
     \item The central limit theorem supports the use of sample means as symmetric estimates, regardless of the original distribution, given a large sample size.
 \end{itemize}
 
-\textbf{R Code Examples}
-\begin{lstlisting}
-# Example data: A sample of quantitative observations
-observations <- c(5, 56, 16, 32, 25)  # Replace with actual data
-
-# Calculate the mean
-mean_value <- mean(observations)
-
-# Calculate the median
-median_value <- median(observations)
-\end{lstlisting}
-
 \subsection{What is a probability?}
 
 Probability is the likelihood of a random event occurring and is based on the concept of relative frequency in large numbers of experiments.
@@ -300,6 +244,61 @@ As the number of trials $n$ increases, the relative frequency tends to stabilize
 For instance, in an experiment involving throwing a thumbtack 100 times and observing whether the pin points up or down, the relative frequency of the pin pointing down stabilizes around a certain value as the number of throws increases. This stabilization point, observed empirically, is interpreted as the probability of the thumbtack landing pin-down. In the thumbtack example, the probability was found to be approximately 0.6 or 60%.
 
 This example illustrates how probability is derived from the relative frequency of an event in a large number of trials, reflecting the likelihood of that event occurring in a given random experiment.
+\pagebreak
+
+\subsection{R Code}
+
+\subsubsection*{Boxplots and Modified Boxplots}
+
+\begin{lstlisting}
+# Example data: A sample of quantitative observations
+observations <- c(22, 26, 24, 19, 23, 27, 28, 18, 30, 40, 15)  # Replace with actual data
+
+# Standard Boxplot
+boxplot(observations, 
+        main = "Standard Boxplot", 
+        ylab = "Values",
+        xlab = "Data",
+        range=0) # range=0 extends whiskers to minimum and maximum values
+
+# Modified Boxplot
+boxplot(observations, 
+        main = "Modified Boxplot", 
+        ylab = "Values",
+        xlab = "Data")
+\end{lstlisting}
+
+\subsubsection*{Mean, Median, Standard Deviation, and Variance}
+
+\begin{lstlisting}
+# Example data: A sample of quantitative observations
+observations <- c(5, 10, 15, 20, 25)  # Replace with actual data
+
+# Calculate the mean
+mean_value <- mean(observations)
+# The 'mean' function calculates the average of the observations
+
+# Calculate the median
+median_value <- median(observations)
+# The 'median' function calculates the median of the observations
+
+# Calculate the standard deviation
+std_dev <- sd(observations)
+# The 'sd' function calculates the standard deviation, 
+# which measures the average deviation from the mean
+
+# Calculate the variance
+variance_value <- var(observations)
+# The 'var' function calculates the variance (standard deviation squared)
+# Variance measures how spread out the numbers are from the mean
+
+# Print the results
+print(paste("Mean:", mean_value))
+print(paste("Median:", median_value))
+print(paste("Standard Deviation:", std_dev))
+print(paste("Variance:", variance_value))
+\end{lstlisting}
+
 \pagebreak
 
 \subsection{Proofs}
@@ -374,5 +373,239 @@ E(S^2) = \frac{1}{n-1}(n - 1)\sigma^2 = \sigma^2
 \]
 \end{proof}
 
+\section{Linear Regression}
+\paragraph{}
+Data analysis often seeks to express one variable as a function of another, either based on theoretical hypotheses or empirical discovery. Simple linear regression models this relationship between two quantitative variables, \( x \) and \( y \), through a linear equation \( y = \alpha + \beta \cdot x \), where \( \alpha \) is the intercept and \( \beta \) the slope. Here, \( y \) is the dependent variable, influenced by the explanatory variable, \( x \).
+\paragraph{}
+An example is modeling the relationship between stearic acid levels and fat digestibility, where data suggests a linear trend, enabling predictions outside the observed range. However, real-life data often deviates from the model, indicating the linear model is an approximation, capturing the general trend rather than exact values.
+
+\subsection{Fitting a regression line}
+\paragraph{}
+Fitting a regression line involves determining the optimal parameters (\( \hat{\alpha}, \hat{\beta} \)) that best represent observed data pairs (\(x_i, y_i\)). This is done by minimizing residuals (\(r_i = y_i - \hat{y_i}\)), the differences between observed values and those predicted by the model \(y = \hat{\alpha} + \hat{\beta} \cdot x\). The method of least squares addresses this by squaring and summing the residuals, ensuring that deviations are treated uniformly, irrespective of their direction. It involves solving for the parameters that minimize the sum of squared residuals, leading to unique parameter estimates.
+\paragraph{}
+For the stearic acid and digestibility example, the best-fit line was found to be \(y = -0.9337 \cdot x + 96.5334\), allowing for predictions and insights into the relationship between stearic acid levels and digestibility. The least squares method not only ensures the minimization of squared residuals but also that the regression line passes through the mean points (\(\bar{x}, \bar{y}\)), providing a robust model for understanding and predicting the dependent variable based on the independent variable.
+
+\subsubsection{Least squares estimation}
+The least squares method is employed to optimize model parameters by minimizing the sum of squared deviations between observed data and model predictions. In the context of a linear regression, the objective is to identify the optimal parameters, \( \alpha \) (intercept) and \( \beta \) (slope), such that the model \( y = \alpha + \beta \cdot x \) best fits the observed data points \( (x_i, y_i) \).
+
+Given \( n \) observations, the least squares criterion seeks to minimize the sum of squared differences between the observed values \( y_i \) and the values predicted by the model \( \hat{y_i} = \alpha + \beta \cdot x_i \), formally expressed as:
+
+\[
+Q(\alpha, \beta; x, y) = \sum_{i=1}^{n} (y_i - \alpha - \beta \cdot x_i)^2
+\]
+
+To find the values of \( \alpha \) and \( \beta \) that minimize \( Q \), we take partial derivatives with respect to \( \alpha \) and \( \beta \), set them to zero, and solve the resulting equations:
+
+\[
+\frac{\partial Q}{\partial \alpha} = -2 \sum_{i=1}^{n} (y_i - \alpha - \beta \cdot x_i) = 0
+\]
+
+\[
+\frac{\partial Q}{\partial \beta} = -2 \sum_{i=1}^{n} x_i (y_i - \alpha - \beta \cdot x_i) = 0
+\]
+
+Solving these equations provides the least squares estimates \( \hat{\alpha} \) and \( \hat{\beta} \) for the intercept and slope, respectively:
+
+\[
+\hat{\beta} = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n} (x_i - \bar{x})^2}
+\]
+
+\[
+\hat{\alpha} = \bar{y} - \hat{\beta} \cdot \bar{x}
+\]
+
+where \( \bar{x} \) and \( \bar{y} \) are the mean values of \( x \) and \( y \) respectively. The resulting line \( y = \hat{\alpha} + \hat{\beta} \cdot x \) represents the best fit to the data in the least squares sense, ensuring the minimized sum of squared residuals and passing through the point \( (\bar{x}, \bar{y}) \).
+
+This method is not confined to linear regression but is a generalized approach for parameter estimation in various models, underpinning the robustness of predictions and understanding of relationships between variables.
+
+\subsection{When is linear regression appropriate?}
+
+This sub-section discusses fitting a linear relationship between two variables, $x$ and $y$, and highlights key considerations before applying linear regression:
+
+\begin{itemize}
+    \item \textbf{Quantitative Variables}: Linear regression is suitable only for quantitative variables. Both $x$ and $y$ must be quantitative to validly model their relationship through linear regression.
+    \item \textbf{Linearity of Relationship}: It's crucial to assess if the relationship between $x$ and $y$ is linear. This is typically done by graphing the data and observing the relationship. If the relationship appears curvilinear, linear regression might not be appropriate. In such cases, data transformation or alternative models should be considered.
+    \item \textbf{Influential Points}: Influential points in linear regression are those data points that have a significant impact on the regression line's slope. These points are often outliers in the $x$-direction. The influence of each data point on the slope is determined by its distance from the mean value of $x$ $(\bar{x})$. If the $x$-value of a point, $x_i$, is close to $\bar{x}$, it has minimal impact on the slope since the term $(x_i - \bar{x})$ in the slope formula's numerator and denominator will be small. If $x_i$ is far from $\bar{x}$, then both numerator and denominator will be large, and the difference $y_i - \bar{y}$ can have a large impact on the slope estimate.
+    \item \textbf{$x$ on $y$ or $y$ on $x$}: In regression analysis, the choice of which variable to designate as the explanatory variable $x$ and which as the response variable $y$ significantly affects the model and its interpretation. When regressing $x$ on $y$, a different model is required than when regressing $y$ on $x$.
+
+    In the regression equation $y=\alpha+\beta x$, solving for $x$ gives $x=-\alpha/\beta+y/\beta$, implying a line with intercept $-\alpha/\beta$ and slope $1/\beta$. However, this regression does not yield the same results as a direct regression of $x$ on $y$. The reason lies in the minimization of different types of residuals: the original regression minimizes vertical errors ($y$-direction) for predicting $y$ from $x$, whereas regressing $x$ on $y$ involves minimizing horizontal errors ($x$-direction) for predicting $x$ from $y$.
+    
+    Deciding which variable to treat as explanatory or response is simple in experiments where one variable is controlled and the other is observed. However, in cases where this distinction is not clear, it might be more appropriate to compute the correlation coefficient, as this approach avoids the inherent bias of choosing one variable over the other as the explanatory variable.
+    
+    \item \textbf{Interpolation}: Interpolation is the prediction of unobserved $y$ values within the observed data range (range of $x$ values). It is generally reliable except in certain cases, such as when there are limited $x$ values with multiple responses. In such cases, it's challenging to establish a linear relationship between $x$ and $y$.
+
+    \item \textbf{Extrapolation}: Extrapolation is predicting outside the observed data range, becoming less certain with increased distance from this range. This uncertainty arises because the linear relationship cannot be confirmed beyond the observed values. While linear regression may fit well within specific intervals, it may not be appropriate for the entire range of possible values.
+    
+\end{itemize}
+
+\subsubsection{Transformation}
+\paragraph{}
+The text discusses how to use linear regression, a statistical method, in situations where the relationship between two variables isn't straight-line (linear). Sometimes, even if the relationship isn't linear, we can make it linear by transforming one of the variables. This process is explained through the growth example of duckweed, a plant.
+Below is the mathematical explanation of the transformation process. \hfill \break
+
+\textbf{Original Situation} \hfill \break
+
+We have data points $(x_i, y_i)$ where $x_i$ represents the days and $y_i$ the number of leaves. The relationship between days ($x$) and leaves ($y$) isn't linear, so a straight line doesn't fit the data well. \hfill \break
+
+\textbf{Transformation} \hfill \break
+
+We transform the response variable (number of leaves) using a logarithmic transformation. Recall that explanatory variable is what changes, and reponse variable gets changed in response to it. Let's call the transformed variable $z$. The transformation is: 
+\begin{equation}
+z_i = \log(y_i)
+\end{equation}
+\paragraph{}
+After transformation, the relationship between days ($x$) and transformed leaves ($z$) is more linear. \hfill \break
+
+\textbf{Linear Regression Model} \hfill \break
+
+Now, we can model $z$ as a linear function of $x$:
+\begin{equation}
+z = \alpha + \beta \cdot x
+\end{equation}
+where $\alpha$ and $\beta$ are parameters to be estimated from the data. \hfill \break
+
+\textbf{Exponential Growth Model} \hfill \break
+
+The exponential growth model is given by:
+\begin{equation}
+f(t) = c \cdot \exp(b \cdot t)
+\end{equation}
+where:
+\begin{itemize}
+    \item $f(t)$ is the population size at time $t$,
+    \item $c$ is the population size at time zero,
+    \item $b$ is the average population increase per time unit.
+\end{itemize} \hfill \break
+
+\textbf{Applying Logarithm to the Model} \hfill \break
+
+Taking the natural logarithm on both sides of the exponential growth model gives:
+\begin{equation}
+\log(f(t)) = \log(c) + b \cdot t
+\end{equation}
+\paragraph{}
+This is a linear relationship with $\log(f(t))$ as the response and $t$ as the explanatory variable. We can compare this with the linear model $z = \alpha + \beta \cdot x$ and identify $\log(c)$ with $\alpha$ and $b$ with $\beta$. \hfill \break
+
+\textbf{Estimation and Back-Transformation} \hfill \break
+
+After fitting the linear model to the transformed data, we get estimates $\hat{\alpha}$ and $\hat{\beta}$. We back-transform these estimates to the original scale:
+\begin{equation}
+\hat{c} = \exp(\hat{\alpha}), \quad \hat{b} = \hat{\beta}
+\end{equation}
+\paragraph{}
+These estimates can be plugged into the exponential growth model to predict the number of leaves on any given day:
+\begin{equation}
+\hat{f}(t) = \hat{c} \cdot \exp(\hat{b} \cdot t)
+\end{equation}
+\paragraph{}
+The growth rate interpretation is that for every day, the number of leaves multiplies by a factor of $\exp(\hat{b})$. \hfill \break
+
+By transforming the response variable and applying linear regression to the transformed data, we can effectively model and understand relationships that are inherently non-linear, as demonstrated in the duckweed growth example. \hfill \break
+ \hfill \break
+ \hfill \break
+
+\subsection{Correlation Coefficient}
+
+In linear regression, we model $y$ as a function of $x$, often assuming a causal relationship where $x$ influences $y$. This assumption is valid in controlled experiments, where $x$ is determined by the investigator, as in the example of stearic acid levels. However, in other cases, while there may be an association between $x$ and $y$, it's not necessarily correct to infer causality. Examples include the relationship between systolic and diastolic blood pressure, human height and weight, steak tenderness and meat dice size, or the growth of two plants in the same pot. These instances show an association but not necessarily a direct causal link. \hfill \break
+
+The\textbf{ sample correlation coefficient} is: 
+
+\begin{equation*}
+\hat \rho = \frac{\sum_{i=1}^{n} {(x_i-\hat{x})(y_i-\hat{y})}}
+{\sqrt{(\sum_{i=1}^{n} {(x_i-\bar{x})^2})(\sum_{i=1}^{n} {(y_i-\bar{y})^2})}}
+\end{equation*}
+
+It measures the strength of the linear relationship between $x$ and $y$ and always lies between -1 and 1. A value of 1 indicates a perfect positive linear relationship, -1 a perfect negative linear relationship, and 0 means there's no linear relationship. The correlation coefficient is dimensionless, reflecting the tightness of the linear relationship, not the slope. It's important to note that a strong correlation does not imply causation and a zero correlation doesn't rule out a strong non-linear relationship.
+
+The correlation coefficient is analogous to the regression slope when regressing $y$ on $x$ after scaling both variables to have a standard deviation of 1. For this, $x_i$ and $y_i$ are transformed into $x_i'$ and $y_i'$, respectively, by dividing by their standard deviations, $s_x$ and $s_y$: $x_i'=x_i/s_x$ and $y_i'=y_i/s_y, i=1,...,n$. The regression slope of $y'$ on $x'$ is the correlation coefficient, $\hat\rho$.
+
+\begin{itemize}
+    \item \textbf{Numerator}: The numerator of the formula involves multiplying the residual of $x$ by the residual of $y$ for each pair. A positive contribution results when $x$ and $y$ deviate in the same direction from their means, and a negative one when they deviate in opposite directions.
+
+    \item \textbf{Denominator}: The denominator of the formula is positive, except when all $x$ or $y$ values are identical, making it undefined. 
+
+\end{itemize}
+
+The sign of the correlation coefficient matches the sign of the regression slope, as their numerators are the same. Notably, $x$ and $y$ are symmetric in the correlation formula, making the correlation of $x$ and $y$ identical to that of $y$ and $x$.
+
+\subsubsection{When is the correlation coefficient relevant?}
+
+\begin{itemize}
+    \item \textbf{Quantitative Variables}: Both variables $x$ and $y$ must be quantitative for the sample correlation coefficient to apply.
+
+    \item \textbf{Linear association}: The association between $x$ and $y$ must be linear. It is wise to graph it, to see if there is perhaps another non-linear association.
+
+\end{itemize}
+
+\subsubsection{Coefficient of Determination}
+
+The coefficient of determination, $R^2$, equal to $\rho ^2$, and it can take on values between 0 and 1. This range indicates the \% to which the variance in the dependent variable ($y$) is explained by the independent variable ($x$). For example an $R^2$ value of 0.42 indicates that 42\% of the variance in $y$ is explained by $x$ in the model. It does not indicate if the relationship is positive or negative though, and it is symmertric with respects to $x$ and $y$, as the correlation coefficient $\rho$ is.
+
+\subsection{Perspective}
+
+In linear regression, x is considered the explanatory variable and is assumed to be quantitative. It can be controlled by the investigator and does not necessarily need to be continuous. The key advantage of regression analysis is its ability to model the relationship between y and the observed x values, facilitating predictions of y for unobserved x values within the sample dataset.
+
+On the other hand, the correlation coefficient is used to measure the strength or "tightness" of the linear relationship. It is appropriate only for assessing the linear association between two continuous variables, x and y. Unlike regression analysis, it does not provide a functional relationship for prediction purposes.
+
+\subsubsection{Modeling the residuals}
+
+In linear regression, the sample standard deviation measures the average distance of observations from their mean. 
+Residuals, measure the distance between observed and predicted values. The standard deviation of the residuals can be calculated using a similar method. 
+
+The sum of the residuals of a linear regression equal zero:
+
+\begin{equation*}
+\sum\limits_{i} {r_i} = \sum_{i=1}^n {y_i-(\hat \alpha + \hat \beta x_i)}=0\end{equation*}
+
+The residual standard deviation is:
+
+\begin{equation*}
+s_{y|x}=\sqrt{\frac {\sum\limits_{i} {r_i^2}} {n-2}}
+\end{equation*}
+
+The subscript $y|x$ refers to a regression model where $y$ is the dependent variable and $x$ is the independent variable. This measures the typical distance between the observed values of $y$ and the values predicted by the model, given $x$.
+
+Note how the denominator is $n-2$, analogous to $n-1$ in the sample standard deviation formula.
+
+\pagebreak
+
+\subsection{R Code}
+
+\begin{lstlisting}
+# Load the dataset
+data(mtcars)
+
+# View the first few rows of the dataset, just like in jupyter
+head(mtcars)
+
+# Plotting mpg against wt
+# pch is the point shape, 19 is a filled round dot
+plot(mtcars$wt, mtcars$mpg, main="MPG vs Weight", xlab="Weight (1000 lbs)", ylab="Miles per Gallon", pch=19)
+
+# Fitting a linear model
+# lm is a R function for fitting linear models
+model <- lm(mpg ~ wt, data=mtcars)
+
+# Plot the linear regression line for mpg against wt using the model
+abline(model, col="blue")
+
+# Transforming hp to a logarithmic scale
+mtcars$log_hp = log(mtcars$hp)
+
+# Plotting log(hp) against mpg with a regression line
+plot(mtcars$log_hp, mtcars$mpg, main="MPG vs Log(Horsepower)", xlab="Log(Horsepower)", ylab="Miles per Gallon", pch=19)
+abline(lm(mpg ~ log_hp, data=mtcars), col="green")
+
+# Calculating residuals for the mpg against wt model
+residuals <- resid(model)
+
+# Plotting residuals
+plot(mtcars$wt, residuals, main="Residuals of MPG vs Weight Model", xlab="Weight (1000 lbs)", ylab="Residuals", pch=19)
+abline(h=0, col="blue")
+
+# Calculating and printing the residual standard deviation
+residual_sd <- sd(residuals)
+cat("Residual Standard Deviation:", residual_sd, "\n")
+\end{lstlisting}
 
 \end{document}
