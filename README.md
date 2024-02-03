@@ -7,7 +7,8 @@ This repository contains a compressed note compendium based on the textbook "Int
 ## Contents
 
 - `main.tex`: LaTeX source file for the compendium.
-- `plots/`: Directory containing R plots
+- `r/`: Directory containing R code.
+- `plots/`: Directory containing R plots.
 
 ## How to Use
 
