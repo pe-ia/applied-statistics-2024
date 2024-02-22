@@ -904,4 +904,110 @@ The Law of Large Numbers has profound implications in both theoretical and appli
     \item \textbf{Convergence}: The LLN speaks about convergence as the sample size goes to infinity. In practice, "large enough" sample sizes are often sufficient for the LLN to hold, but what constitutes "large enough" can vary depending on the distribution of the data.
 \end{itemize}
 
+\subsection{Multivariate Gaussian Distribution}
+
+The Multivariate Gaussian Distribution, also known as the Multivariate Normal Distribution, extends the concept of the normal distribution to multiple dimensions, looking at several things at once (for example: height and weight).
+
+\subsubsection{Mean Vector and Covariance Matrix}
+
+\paragraph{Mean Vector} Vector of means for each variable; in our example, if we denote height by $X_1$ and weight by $X_2$, the mean vector $\boldsymbol \mu$ would look like: $\boldsymbol \mu = \begin{bmatrix} \mu_1 \\ \mu_2 \end{bmatrix}$ where $\mu_1$ and $\mu_2$ are the means for $X_1$ and $X_2$ respectively.
+
+\paragraph{Covariance Matrix} The covariance matrix indicates how much each variable varies on its own and how they vary together.
+
+\begin{itemize}
+    \item \textbf{On its own (Diagonal)}: The diagonal tells us about the variance of each variable; in our example, how spread out the heights and weights are.
+    \item \textbf{Together (Off-diagonal)}: The off-diagonal part tells us about the covariance; in our example, whether taller people tend to be heavier (a positive relationships) or lighter (a negative relationship). 
+\end{itemize}
+
+In our example, for height ($X_1$) and weight $X_2$, the covariance matrix $\boldsymbol \Sigma$ is: 
+
+\begin{align*}
+\boldsymbol{\Sigma} = \begin{bmatrix} {\sigma_{X_1}^2} & {\sigma_{X_1X_2}} \\  {\sigma_{X_1X_2}} & {\sigma_{X_2}^2} \end{bmatrix}
+\end{align*}
+
+Where:
+
+\begin{itemize}
+    \item $\sigma_{X_1}^2$ is the variance in height
+    \item $\sigma_{X_2}^2$ is the variance in weight
+    \item $\sigma_{X_1 X_2}$ is the covariance between height and weight
+    
+\end{itemize}
+
+\subsubsection{The Probability Density Function (PDF)}
+
+The PDF of the Multivariate Gaussian tells us how likely we are to see a particular combination of variables; in our example, height and weight.
+
+The PDF for a $D$-dimensional vector $\boldsymbol{x} = (x_1, x_2), \boldsymbol{x} \in \mathbb{R}^D$, given mean vector $\boldsymbol{\mu}$ and covariance matrix $\boldsymbol{\Sigma}$, is:
+
+\begin{align*}
+p(\boldsymbol{x})= \frac {1} {(2\pi)^{D/2} |\boldsymbol{\Sigma}|^{1/2}} \exp{[-\frac 1 2 (\boldsymbol{x} - \boldsymbol{u})^T \boldsymbol{\Sigma}^{-1} (\boldsymbol{x} - \boldsymbol{u})]}
+\end{align*}
+
+When we plot the distribution, the tilt indicates the relationship (covariance) between the variables, while the shape indicates the variance of the variables. Circular plots indicate that the variables have the same variance.
+
+\subsection{R Code}
+
+\subsubsection*{Law of Large Numbers}
+
+\begin{lstlisting}
+# Set the true parameters for the normal distribution
+true_mean <- 0
+true_sd <- 1
+
+# Set the number of simulations
+n_sim <- 25000
+
+# Generate random samples from the normal distribution
+samples <- rnorm(n_sim, mean = true_mean, sd = true_sd)
+
+# Calculate the cumulative mean
+cumulative_means <- cumsum(samples) / (1:n_sim)
+
+# Plot the cumulative mean
+plot(cumulative_means, type = "l", col = "blue", ylim = c(true_mean - 0.25, true_mean + 0.25),
+     xlab = "Number of Samples", ylab = "Cumulative Average",
+     main = "Demonstration of the Law of Large Numbers")
+
+# Add a line for the true mean
+abline(h = true_mean, col = "red", lwd = 2)
+
+# Annotate the true mean
+legend("bottomright", legend = c("Cumulative Mean", "True Mean"), col = c("blue", "red"), lty = 1)
+\end{lstlisting}
+
+\subsubsection*{Multivariate Gaussian Distribution}
+
+\begin{lstlisting}
+# Parameters
+mean_vector <- c(170, 65)
+mu_height <- 170
+mu_weight <- 65
+var_height <- 25
+var_weight <- 36
+cov_hw <- 18
+
+# Generating grid points for height and weight
+heights <- seq(mu_height - 3*sqrt(var_height), mu_height + 3*sqrt(var_height), length.out = 100)
+weights <- seq(mu_weight - 3*sqrt(var_weight), mu_weight + 3*sqrt(var_weight), length.out = 100)
+
+# Function to calculate the density of the Multivariate Gaussian
+mvn_density <- function(x, y, mu, Sigma) {
+  exp(-0.5 * t(c(x - mu[1], y - mu[2])) %*% solve(Sigma) %*% c(x - mu[1], y - mu[2])) /
+    (2 * pi * sqrt(det(Sigma)))
+}
+
+# Calculate density values
+Sigma <- matrix(c(var_height, cov_hw, cov_hw, var_weight), nrow = 2)
+density_values <- outer(heights, weights, Vectorize(function(x, y) mvn_density(x, y, mu = c(mu_height, mu_weight), Sigma = Sigma)))
+
+# Plot with filled contours
+filled.contour(heights, weights, density_values,
+               xlab = "Height (cm)", ylab = "Weight (kg)",
+               main = "Height vs Weight Distribution with Color Shading",
+               color.palette = colorRampPalette(c("blue", "green", "yellow", "red")),
+               key.title = title(main = "Density Levels", cex.main = 1),
+               key.axes = axis(4, las = 1))
+\end{lstlisting}
+
 \end{document}
