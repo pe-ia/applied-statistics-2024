@@ -9,6 +9,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{hyperref}
+\usepackage{outlines}
 
 \title{Applied Statistics}
 \author{Nicolas Lejeune, Peter Iatsenia}
@@ -539,7 +540,7 @@ The sign of the correlation coefficient matches the sign of the regression slope
 
 \subsubsection{Coefficient of Determination}
 
-The coefficient of determination, $R^2$, equal to $\rho ^2$, and it can take on values between 0 and 1. This range indicates the \% to which the variance in the dependent variable ($y$) is explained by the independent variable ($x$). For example an $R^2$ value of 0.42 indicates that 42\% of the variance in $y$ is explained by $x$ in the model. It does not indicate if the relationship is positive or negative though, and it is symmertric with respects to $x$ and $y$, as the correlation coefficient $\rho$ is.
+The coefficient of determination, $R^2$, equal to $\rho ^2$, can take on values between 0 and 1. This range indicates the \% to which the variance in the dependent variable ($y$) is explained by the independent variable ($x$). For example an $R^2$ value of 0.42 indicates that 42\% of the variance in $y$ is explained by $x$ in the model. It does not indicate if the relationship is positive or negative though, and it is symmertric with respects to $x$ and $y$, as the correlation coefficient $\rho$ is.
 
 \subsection{Perspective}
 
@@ -607,5 +608,300 @@ abline(h=0, col="blue")
 residual_sd <- sd(residuals)
 cat("Residual Standard Deviation:", residual_sd, "\n")
 \end{lstlisting}
+
+\pagebreak
+
+\section{Comparison of groups}
+
+One-way analysis of variance (ANOVA) is used for comparing two or more groups. 
+
+For instance, a meat scientist investigating how three varied storage conditions affect meat tenderness would randomly allocate 24 meat pieces into three groups, with eight pieces per group. Each group's meat is stored under identical conditions, and their tenderness is measured after a period. The inquiry is whether storage conditions significantly influence tenderness, distinguishing between actual effects and random variations, and determining the magnitude of any differences. This analysis is an example of ANOVA, as the scientist will compare 3 different categorical groups.
+
+\subsection{Graphical and simple numerical comparison}
+
+Analyzing data typically begins with graphical inspection, such as using parallel boxplots or strip charts, to highlight key differences, data variation, and consistency across groups. Statistical summaries of each group are also compared for detailed analysis.
+
+An example involves comparing parasite counts in two salmon stocks to determine if infection rates differ. Statistical analysis, including mean and standard deviation calculations for each stock, showed higher parasite counts in the Ätran stock compared to the Conon stock:
+
+\begin{itemize}
+    \item \textbf{Ätran}: mean = 32.23, SD = 7.28
+
+    \item \textbf{Conon}: mean = 21.54, SD = 5.81 
+
+\end{itemize}
+
+This suggests higher susceptibility to parasites in Ätran salmon. However, results could vary with new samples, highlighting the need to distinguish between genuine differences and random variation. The analysis focuses on the difference between sample means, considering the natural variability of sample means to determine if observed differences are significant or due to chance.
+
+\subsection{Between-group variation and within-group variation}
+
+When comparing only two groups, the difference in means ($\bar{y_1}-\bar{y_2}$) serves as a practical measure of group differences. However, it's crucial to consider the natural variation within samples to determine if the observed difference might be due to chance.
+
+With three or more groups, the analysis involves multiple pairwise differences that need to be collectively assessed. This introduces the concept of between-group and within-group variations, essential for understanding the dynamics of data analysis:
+
+\begin{itemize}
+    \item \textbf{Between-group variation} refers to the differences between the groups. Graphically, it's represented by the discrepancy between the means of each group and the overall mean. The formula is: ${SS}_{grp}=\sum_{j=1}^{k} n_j(\bar{y_i}-\bar{y})^2$
+
+    \item \textbf{Within-group variation} refers to the variability within each group - the spread of observations around their group mean. The formula is: ${SS}_{e}=\sum_{i=1}^{n} (y_i-\bar{y}_{g(i)})^2$
+
+\end{itemize}
+
+For the two formulas:
+
+\begin{itemize}
+    \item \textbf{$k$} = the number of groups
+    \item \textbf{$n_j$} = the number of observations in group $j$
+    \item \textbf{$g(i)$} = the group for observation i
+\end{itemize}
+
+
+A significant between-group variation suggests differences between group means. However, if within-group variation is also high, the differences could be attributed to random variation, indicating that repeating the experiment might yield varying results. Thus, analysis must account for both types of variation.
+
+This differentiation between variation sources is foundational to the analysis of variance (ANOVA), a method named for its focus on dissecting and analyzing these variations to discern significant differences between groups.
+
+\subsection{Populations, samples, and expected values}
+
+In comparing different populations, such as men's and women's average blood pressure, we aim to analyze the population means ($\alpha_m$ for men and $\alpha_f$ for women), which represent the expected values of blood pressure in the absence of additional information. To compare these averages, samples from each population are collected and their blood pressures measured to infer about the population averages.
+
+The concept applies similarly to comparing two different salmon stocks from the earlier exammple, Ätran and Conon, where samples from each population are used to study differences in parasite counts. In experiments like the antibiotics study involving heifers, even though the groups come from a single population and are differentiated by treatment, the objective remains the same: to compare expected values ($\alpha$'s) across groups, where $\alpha_{spiramycin}$ and $\alpha_{control}$ might represent the average amounts of organic material in treated vs. untreated heifers, respectively.
+
+Regardless of whether groups are formed from distinct populations or as a result of experimental intervention, the goal is to compare these expected values across groups. Essential to this comparison is accounting for the variation within groups, quantified by the standard deviations of each group. This within-group variation is a critical factor in assessing the significance of differences between the expected values of different groups or treatments.
+
+\subsection{Least squares estimation and residuals}
+Consider a scenario with $n$ observations distributed across $k$ groups, where each group is labeled from 1 to $k$. The objective is to estimate the expected values $\mu_1, \ldots, \mu_k$ for each group. To achieve this, we employ the least squares criterion. For any observation $i$, let $g(i)$ represent its group, implying $\mu_{g(i)}$ is the expected value for observation $i$. The sample mean $\bar{y}_j$ and sample standard deviation $s_j$ for group $j$ are defined as:
+\[
+\bar{y}_j = \frac{1}{n_j} \sum_{i:g(i)=j} y_i, \quad s_j = \sqrt{\frac{1}{n_j - 1} \sum_{i:g(i)=j} (y_i - \bar{y}_j)^2},
+\]
+for $j = 1, \ldots, k$. The least squares estimates of $\mu_1, \ldots, \mu_k$ are the values that minimize the sum of squared deviations $Q(\mu_1, \ldots, \mu_k) = \sum_{i=1}^{n} (y_i - \mu_{g(i)})^2$. These estimates are given by $\hat{\mu}_j = \bar{y}_j$ for $j = 1, \ldots, k$.
+
+The residual for observation $i$ is $r_i = y_i - \hat{\mu}_{g(i)}$, and the residual variance $s^2$ and standard deviation $s$ are computed as:
+\[
+s^2 = \frac{1}{n - k} \sum_{i=1}^{n} r_i^2, \quad s = \sqrt{s^2},
+\]
+where $n - k$ adjusts for the estimation of $k$ parameters. The residual variance can also be expressed as a weighted average of the group variance estimates $s_j^2$, which is known as the pooled sample variance. This approach accounts for the within-group variability and assumes equal population standard deviations across groups.
+
+\subsection{Paired and unpaired samples}
+We revisit the scenario of comparing two groups, but with a distinct data structure characterized by pairs of observations naturally linked to each other, known as paired samples. This arrangement often arises when two measurements are taken under varying conditions for each subject, such as in dietary studies where subjects switch diets between periods, or in experiments involving pairs of related units like twins. The aim is to assess differences between conditions, reducing the substantial variation among subjects by focusing on paired differences.
+
+An example involves a study on equine lameness with measurements of symmetry scores for eight horses, both in healthy and induced-lameness states. The analysis relies on the differences in symmetry scores between these states for each horse, aiming to determine if lameness significantly alters the symmetry score. Positive differences for all horses suggest a change, but statistical analysis is needed to confirm if this is beyond random variation.
+
+It's crucial to differentiate between paired and unpaired (independent) samples since they require distinct analytical methods. In paired samples, observations within a pair share underlying characteristics, making the assumption of independence between observations inappropriate. This shared information, such as a horse's general gait pattern, can influence the results. By analyzing the differences within pairs, we eliminate issues related to independence and potentially neutralize factors like physical proportions or general patterns that could affect both measurements similarly.
+
+Paired designs can offer practical and economical advantages by requiring fewer subjects to achieve a certain precision in estimating differences. However, it's not always feasible to conduct paired studies, especially when measurements involve irreversible processes or when pairing is impractical, as in the case with different salmon stocks. Paired studies aim to minimize random variation unrelated to the investigation's focus, essentially using the experimental units as their own controls to highlight the effect of interest.
+
+\subsection{Perspective}
+
+This section discusses three types of data structures relevant to comparing groups or treatments:
+
+\begin{itemize}
+    \item \textbf{Two Independent Samples}: This structure involves samples from two distinct groups or treatments, presumed independent. It's highlighted separately for its importance in distinguishing from paired samples due to the necessity of different analysis methods and because it introduces foundational concepts for understanding more complex arrangements.
+
+    \item \textbf{Independent Samples Across Multiple Groups}: This structure extends the first to encompass samples from $k$ different groups or treatments, maintaining independence among them. This setup is suited for one-way analysis of variance (ANOVA), which compares variation sources within and across groups to assess significant differences.
+
+    \item \textbf{Paired Samples}: This involves paired measurements, where each pair corresponds to observations from two different groups or treatments. The paired nature of the data requires distinct analytical approaches due to the inherent linkage between observations within each pair.
+\end{itemize}
+
+The first case serves as a basis for the second, emphasizing the shift in complexity when analyzing more than two groups. One-way ANOVA, used in the independent samples scenario, focuses on comparing expected values or average response levels across groups, underlining the importance of understanding the precision of these estimates to discern real differences from those occurring by chance.
+
+A critical assumption for ANOVA is the similarity of standard deviations across groups, with a rule-of-thumb being that the ratio between the largest and smallest group standard deviations should not exceed 2. However, this guideline's applicability depends on sample sizes, with larger and equally sized samples offering more robust results.
+
+The analysis must also account for data symmetry (since standard deviation is meaningful primarily for symmetric data) and sample size, as small samples can lead to imprecise standard deviation estimates. In cases of heterogeneous variation, data transformation (like logarithmic transformation) might be necessary to achieve homogeneity of variances across groups.
+
+Furthermore, scientific experiments often involve more than one explanatory factor, necessitating multi-way ANOVA for simultaneous consideration of multiple factors. Two-way ANOVA, for example, analyzes the effects of two factors and their interactions, providing a more comprehensive understanding of the factors influencing the response variable.
+
+\subsection{R Code}
+
+\begin{lstlisting}
+# Load the mtcars dataset
+data(mtcars)
+
+# Graphical comparison of mpg across different cylinder groups
+boxplot(mpg ~ cyl, data = mtcars,
+        main = "MPG by Number of Cylinders",
+        xlab = "Number of Cylinders", ylab = "Miles Per Gallon")
+
+# One-Way ANOVA for mpg across cylinder groups
+anova_result <- aov(mpg ~ as.factor(cyl), data = mtcars)
+summary(anova_result)
+
+# Checking assumptions
+
+# Normality check for each cylinder group for 'mpg'
+shapiro.test(mtcars$mpg[mtcars$cyl == 4])
+shapiro.test(mtcars$mpg[mtcars$cyl == 6])
+shapiro.test(mtcars$mpg[mtcars$cyl == 8])
+
+# Homogeneity of variances (Levene's Test is not available in base R, using Bartlett's test as an alternative)
+bartlett.test(mpg ~ as.factor(cyl), data = mtcars)
+
+# Since mtcars does not have paired data, let's simulate a scenario for demonstration purposes
+# Simulating before and after data for a paired sample scenario
+set.seed(123) # For reproducibility
+before <- rnorm(10, 20, 5)
+after <- before + rnorm(10, -2, 2) # Assume some decrease
+
+# Paired t-test
+paired_test_result <- t.test(before, after, paired = TRUE)
+print(paired_test_result)
+\end{lstlisting}
+
+\section{Normal Distribution}
+
+Statistical models capture systematic behavior and random variation. The section introduces the normal (Gaussian) distribution for random variation, extending beyond the average behavior explored in linear regression and one-way ANOVA. The normal distribution, vital for continuous variables, is effective due to the central limit theorem (CLT), which suggests averages tend toward a normal distribution regardless of the original data's distribution. This distribution is not suitable for categorical data, addressed with the binomial distribution in later chapters. Named after Carl Friedrich Gauss, the Gaussian distribution is preferred for its accurate data representation, especially in biological data, and its simple mathematical properties, enhancing statistical analysis for continuous data.
+
+\subsection{Properties}
+
+Continuous quantitative data, exemplified by a study on crab weights at the Royal Veterinary and Agricultural University in Denmark, show the utility of the normal distribution. Recording weights of 162 crabs, the study found a mean of 12.76 grams and a standard deviation of 2.25 grams. A histogram of crab weights aligns well with a normal distribution curve defined by these parameters, illustrating the distribution's effectiveness in modeling weight variation. The corresponding density function for this normal distribution highlights its applicability in analyzing such continuous data.
+
+$f(y)= \frac {1} {\sqrt{2 \pi \cdot 2.25^2}} \exp (-\frac {1} {2 \cdot 2.25^2} (y-12.76)^2)$
+
+\subsubsection{Density, mean, and standard deviation}
+
+Histograms for continuous data divide observations into subintervals, representing frequency with rectangle heights. When normalized, these rectangles' areas sum to 1, indicating relative frequencies or probabilities for large samples. Smooth histograms can approximate smooth curves, like the normal distribution density:
+
+$f(y) = \frac {1} {\sqrt{2 \pi \sigma ^2}} \exp (- \frac {1} {2 \sigma ^2} (y-\mu)^2 ), -\infty < y < \infty$
+
+where $\mu$ and $\sigma$ represent the mean and standard deviation. This density suggests that the probability of an observation falling within any interval (a, b) is the area under the curve from a to b, calculated as $P(a<Y<B)= \int_a^b f(y) dy$, where $Y$ is a random observation.
+
+For a sample drawn according to this density, the sample mean and standard deviation approach $\mu$ and $\sigma$ s sample size increases, defining the mean and standard deviation of the distribution. A variable $Y$ is normally distributed, $Y \sim N(\mu, \sigma ^2)$, if its values follow this density.
+
+Continuing the crab weight example, using $\mu = 12.76$ and $\sigma=2.25$, the normal density closely matches the histogram, suggesting a $N(12.76, 2.25^2)$ distribution for crab weights. The probability of a crab weighing between 16 and 18 grams is computed through the integral of the density function over that range, showing a close match between calculated probabilities and observed relative frequencies when the sample well represents the normal distribution.
+
+Normal densities are bell-shaped and symmetric around $\mu$, with properties of symmetry, centering (maximum value at $\mu$), and dispersion (width varies with $\sigma$). The interpretations of $\mu$ and $\sigma$ align with their roles in determining the distribution's center and spread. Probabilities for any interval are non-zero due to the density's positive value across its range, but single points have zero probability. The total area under the density curve equals 1, reflecting the total probability mass.
+
+\subsubsection{Transformations of normally distributed variables}
+
+The normal distribution's key properties include the normality of sums of normally distributed variables and the retention of normality through linear transformations. Specifically:
+
+\begin{itemize}
+    \item \textbf{Sum of Normally Distributed Variables}: If $Y_1 \sim N(\mu_1 \sigma_1^2)$ and $Y_2 \sim N(\mu_2 \sigma_2^2)$ are independent, their sum $Y_1 + Y_2$ follows a normal distribution $N(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2)$, with mean $\mu_1 + \mu_2$ and standard deviation $\sqrt{\sigma_1^2 + \sigma_2^2}$
+    \item \textbf{Linear Transformations}: A normally distributed variable $Y \sim N(\mu \sigma^2)$ transformed by $V=a+bY$ also follows a normal distribution, $N(a+b\mu, b^2\sigma^2)$, where $a$ and $b$ are real numbers. The mean and standard deviation of $V$ are $a+b\mu$ and $|b|\sigma$, respectively
+    \item \textbf{Standardization}: Any normally distributed variable $Y$ can be standardized to $Z= \frac {Y-\mu} {\sigma} \sim N(0,1)$, a special case of linear transformation, with $a = -\mu / \sigma$ and $b = 1/ \sigma$
+\end{itemize}
+
+Independence is crucial for these properties, especially for the variance formula in sums. Even without independence, $Y_1 + Y_2$ remains normally distributed with mean $\mu_1 + \mu_2$, but variance calculations require independence. These properties extend to any number of terms, affecting sample means and standard deviations.
+
+For crab weights modeled by $N(12.76, 2.25^2)$ applications include:
+
+\begin{itemize}
+    \item The total weight of two crabs, summing to a mean of 25.52 and a standard deviation of 3.18.
+    \item Converting weights to kilograms with a specific adjustment results in a normal distribution with adjusted mean and standard deviation.
+    \item Standardizing crab weights yields a $N(0,1)$ distribution
+\end{itemize}
+
+Furthermore, if $y_1,...,y_n$ are independent and identically distributed as $N(\mu, \sigma^2)$, the sum of these variables is normally distributed with mean $n \mu$ and variance $n \sigma ^2$. The sample mean, $\bar{y} = \frac {1} {n} \sum_{i=1}^{n} y_i$, follows $N(\mu, \sigma ^2 / n)$, implying an average of normally distributed variables remains normally distributed, with the original mean but standard deviation reduced by $\sqrt{n}$. This principle is vital for understanding distributions of sample means and their implications in statistical analysis.
+
+\subsubsection{Probability calculations}
+
+\subsubsection{Central part of distribution}
+
+\subsection{One sample}
+
+The expected value of observations $y_1, ..., y_n$ reflects the average value in a population. These observations help infer population characteristics. For example, studying crab weights aims to determine the population's average weight and what deviations are considered unusual. The sample mean, $\bar y$ estimates the population mean. However, its reliability varies with sample size—the larger the sample, the more accurate the estimate. Assuming the population follows a normal distribution and the sample is randomly drawn, it's possible to precisely estimate population characteristics like average weights and typical variations.
+
+\subsubsection{Independence}
+
+Observations in a sample are assumed to be independent, meaning the probability of multiple events happening simultaneously is the product of their individual probabilities:
+
+$P(Y_1 \leq a_1, ..., Y_n \leq a_n) = P(Y_1 \leq a_1) \cdot \cdot \cdot P(Y_n \leq a_n)$
+
+Independence implies each observation adds unique information to the dataset. For example, in studying apple tree yields, if 20 trees are randomly selected from 1000, their yields are considered independent. However, if for each of 10 randomly selected trees, a "twin" tree is also selected for its similarity, the yields are not independent since each pair of trees holds related information. Similarly, selecting 10 trees and their "opposites" (based on size or other criteria) also results in dependent observations. Furthermore, sampling two trees from each of 10 orchards introduces dependency because trees within the same orchard are influenced by common environmental factors, making it unreasonable to assume independence among these samples.
+
+\subsubsection{Estimation}
+
+When $y_1, ..., y_n$ are independent observations from a normal distribution with mean $\mu$ and standard deviation $\sigma$, they are considered iid $N(\mu, \sigma^2)$. The sample mean $\bar y$ and sample standard deviation $s$ serve as natural estimates for $\mu$ and $\sigma$ respectively, with $\hat \mu = \bar y$ and $\hat \sigma = s$.
+
+The sample mean $\bar y$ itself follows a normal distribution with its expected value $E(\hat \mu) = \mu$ and standard deviation $sd(\hat \mu) = \frac {1} {\sqrt{n}} \sigma$, illustrating statistical properties:
+
+\begin{itemize}
+    \item \textbf{Unbiased Estimate}: The sample mean accurately reflects the population mean on average, indicating that across many samples, the average of the sample means equals $\mu$
+    \item \textbf{Consistent Estimate}: Precision of the sample mean improves with sample size, as its standard deviation decreases, allowing for an increasingly accurate estimate of $\mu$
+\end{itemize}
+
+These properties underscore that the sample mean is both a correct and precise estimator of the population mean, with precision that can be enhanced by increasing the sample size.
+
+\subsection{Are the data (approximately) normally distributed?}
+
+Model validation often requires a variable's distribution to closely resemble a normal distribution. Perfect normality is rare, but statistical methods remain effective if the normality assumption is reasonably satisfied. This is usually checked using graphical methods.
+
+\subsubsection{Histograms and QQ-plots}
+
+For validating a variable's approximate normal distribution, comparing its histogram to a normal density curve with matching sample mean and standard deviation is useful. This method was applied to crab weight data, showing a good fit, indicating an approximate normal distribution.
+
+Additionally, the QQ-plot (quantile-quantile plot) is crucial for this validation, comparing sample quantiles against the normal distribution's quantiles. A QQ-plot for crab weights aligned closely with a straight line defined by the sample's mean ($\bar y = 12.76$) and standard deviation ($s =2.25$), indicating no significant deviations from normality.
+
+The QQ-plot operates on the principle that if a sample ($z_1,...,z_n$) possibly comes from a $N(0,1)$ distribution, plotting ordered observations ($z_{j}$) against corresponding $N(0,1)$ quantiles ($u_j$) should reveal a linear pattern with intercept zero and slope one for a perfectly normal distribution. For a general sample ($y_1,...,y_n$) from $N(\mu, \sigma^2)$, this plot helps estimate $\mu$ and $\sigma$ by the linearity of plotted points around a straight line, with the line's intercept and slope serving as estimates for $\mu$ and $\sigma$.
+
+To make a QQ plot for checking if your data follows a normal distribution:
+
+\begin{itemize}
+    \item \textbf{Sort the data}: Arrange the data points in ascending order
+    \item \textbf{Calculate theoretical quantiles}: Determine the expected positions of the data points if they were perfectly normally distributed. This involves figuring out where each data point would lie on a normal distribution curve
+    \item \textbf{Plot the data}: On a graph, plot each of the sorted data points against the corresponding theoretical quantile. The x-axis will represent the theoretical (expected) quantiles from a normal distribution, and the y-axis will show the actual data's quantiles
+\end{itemize}
+
+If the data is normally distributed, the points on the QQ plot will roughly follow a straight line.
+
+\subsubsection{Transformations}
+
+Histograms or QQ-plots sometimes reveal that data do not fit a normal distribution, often due to subgroup differences (e.g., men vs. women) resulting in bimodal distributions or skewness in data with only positive values. For bimodal distributions, modeling each group with its own normal distribution may be more appropriate. Skewed data may benefit from log-transformation, making the log-transformed data more normally distributed, as shown with vitamin A intake among Danish men. This transformation aligns histograms and QQ-plots closer to normality. However, any analysis or probability computations should then be conducted on the transformed scale. The study on Danish food intake, including vitamin A and basal metabolic rate (BMR), demonstrates these points. BMR data, when analyzed separately for men and women, fit normal distributions reasonably well but combined data show bimodality, indicating the importance of considering subgroup differences for normal approximation.
+
+To log-transform data:
+
+\begin{outline}
+    \1 \textbf{Choose the Log Base}: Select the base for the logarithm, typically $e$ (natural logarithm) or 10.
+    \1 \textbf{Decide on Log Transformation}: Determine whether you need to log-transform $y$, $x$, or both, based on the distribution of your data or the specific analysis requirements.
+        \2 If transforming $y$: Apply the log function to each $y_i$ to get $log(y_1), ..., log(y_n)$
+        \2 If transforming $x$: Apply the log function to each $x_i$ to get $log(x_1), ..., log(x_n)$
+        \2 If transforming both: Apply the log function to each pair of $x_i$ and $y_i$ to get pairs of $log(x_1),log(y_1);...;log(x_n),log(y_n)$
+    \1 \textbf{Transform}: Transform the data, then plot/store the resulting values
+\end{outline}
+
+\subsubsection{The exponential distribution}
+
+\subsection{The central limit theorem}
+
+\subsection{R Code}
+
+\section{Law of Large Numbers and Multivariate Gaussian Distribution}
+
+\subsection{Law of Large Numbers}
+
+The Law of Large Numbers (LLN) is a fundamental theorem in probability and statistics that describes the result of performing the same experiment a large number of times. According to the LLN, the average of the results obtained from a large number of trials will converge to the expected value as the number of trials approaches infinity. This theorem provides a solid foundation for the concept of long-term stability in probabilities and is crucial for understanding the behavior of averages in large samples.
+
+The LLN is divided into two versions: the Weak Law of Large Numbers (WLLN) and the Strong Law of Large Numbers (SLLN). Both versions assert that with a sufficient number of observations, the sample mean will be close to the population mean, but they differ in their mathematical rigor and conditions for convergence.
+
+\subsubsection{Weak Law of Large Numbers (WLLN)}
+
+The Weak Law of Large Numbers states that for a sequence of independent and identically distributed (iid) random variables with a finite expected value, the sample average converges in probability towards the expected value as the sample size increases. Mathematically, if $X_1,X_2,...,X_n$ are iid random variables with expected value $E[X]=\mu$ and variance $Var(X)=\sigma^2$, then for any $\epsilon > 0$,
+
+$P(|\frac {1} {n} \sum_{i=1}^{n} X_i- \mu| \geq \epsilon) \rightarrow 0 \text{ as } n \rightarrow \infty$
+
+This means that the probability of the sample mean deviating from the population mean by more than $\epsilon$ tends to zero as the sample size $n$ becomes very large.
+
+\subsubsection{Strong Law of Large Numbers (SLLN)}
+
+The Strong Law of Large Numbers strengthens the WLLN by stating that the sample average almost surely converges to the expected value. In other words, the probability that the sample mean converges to the population mean as the sample size approaches infinity is equal to one. For the same sequence of iid random variables as above, the SLLN asserts that:
+
+$P(\lim\limits_{n\rightarrow \infty} (\frac {1} {n} \sum_{i=1}^{n} X_i)=\mu) =1$
+
+The SLLN implies not just that large deviations become improbable as the sample size increases, but that they essentially do not occur.
+
+\subsubsection{Implications and Applications}
+
+The Law of Large Numbers has profound implications in both theoretical and applied statistics:
+
+\begin{itemize}
+    \item \textbf{Estimation of Probabilities}: It underlies the principle that probabilities can be estimated by the relative frequency of events in large numbers of trials.
+    \item \textbf{Statistical Stability}: It justifies the expectation that empirical averages of large samples are stable and reliable estimates of theoretical averages.
+    \item \textbf{Insurance and Gambling}: In insurance, premiums are priced on the expectation that, over a large number of policyholders, actual losses will average out to the expected losses. In gambling, the LLN explains why casinos always win in the long run.
+\end{itemize}
+
+\subsubsection{Conditions and Limitations}
+
+\begin{itemize}
+    \item \textbf{Independence and Identical Distribution}: The classical form of the LLN assumes that the random variables are independent and identically distributed. This condition can be relaxed in some versions of the theorem.
+    \item \textbf{Finite Expected Value}: The random variables must have a finite expected value. If the expected value is infinite, the LLN does not apply.
+    \item \textbf{Convergence}: The LLN speaks about convergence as the sample size goes to infinity. In practice, "large enough" sample sizes are often sufficient for the LLN to hold, but what constitutes "large enough" can vary depending on the distribution of the data.
+\end{itemize}
 
 \end{document}
