@@ -791,8 +791,20 @@ For crab weights modeled by $N(12.76, 2.25^2)$ applications include:
 Furthermore, if $y_1,...,y_n$ are independent and identically distributed as $N(\mu, \sigma^2)$, the sum of these variables is normally distributed with mean $n \mu$ and variance $n \sigma ^2$. The sample mean, $\bar{y} = \frac {1} {n} \sum_{i=1}^{n} y_i$, follows $N(\mu, \sigma ^2 / n)$, implying an average of normally distributed variables remains normally distributed, with the original mean but standard deviation reduced by $\sqrt{n}$. This principle is vital for understanding distributions of sample means and their implications in statistical analysis.
 
 \subsubsection{Probability calculations}
+The standard normal distribution, denoted as \(N(0, 1)\), is characterized by its density function \(\phi(y) = \frac{1}{\sqrt{2\pi}} \exp\left(-\frac{1}{2}y^2\right)\). This formulation is pivotal for calculating probabilities for any normal variable \(N(\mu, \sigma^2)\) through the transformation \(P(a < Y < b) = P\left(\frac{a - \mu}{\sigma} < Z < \frac{b - \mu}{\sigma}\right)\), where \(Z \sim N(0, 1)\).
+
+The probability that \(Z\) is less than or equal to a specific value \(z\) is obtained by the integral \(\Phi(z) = \int_{-\infty}^{z} \phi(y) dy\), representing the cumulative distribution function (cdf) of \(Z\), or equivalently, of \(N(0, 1)\). The function \(\phi(y)\) is the derivative of the cdf, \(\Phi(z)\).
+
+This cdf, \(\Phi(z)\), facilitates the calculation of probabilities for intervals within the \(N(0, 1)\) distribution and, by extension, for any \(N(\mu, \sigma^2)\) distribution, via the relation \(P(a < Y < b) = \Phi\left(\frac{b - \mu}{\sigma}\right) - \Phi\left(\frac{a - \mu}{\sigma}\right)\). Values of \(\Phi(z)\) indicate the cumulative probabilities and quantiles critical to the standard normal distribution.
 
 \subsubsection{Central part of distribution}
+Determining the central portion of a distribution, for instance, the central 90\%, involves finding an interval where 90\% of observations are expected. For the standard normal distribution \(N(0, 1)\), this interval is \([-1.645, 1.645]\) encompassing the central 90\% of the distribution, as \(P(-1.645 < Z < 1.645) = 0.90\).
+
+This principle extends to any normal distribution \(N(\mu, \sigma^2)\), indicating that the interval \((\mu - 1.645\sigma, \mu + 1.645\sigma)\) captures the central 90\% of observations, denoted as \(\mu \pm 1.645\sigma\). The choice of 1.645, the 95\% quantile, is to accommodate the central 90\% based on the distribution's symmetry.
+
+Further, for different central portions, intervals such as \(\mu \pm 1.96\sigma\) for 95\%, and \(\mu \pm 2.576\sigma\) for 99\% are calculated similarly. These intervals help in setting expectations regarding the location of a specific percentage of observations within a normal distribution.
+
+For example, with crab weights assumed to follow a normal distribution with mean 12.76 grams and standard deviation 2.25 grams, 95\% of crab weights are expected within \(12.76 \pm 1.96 \times 2.25\) grams, between 8.35 and 17.17 grams. Using the cumulative distribution function, the probability for specific weight intervals can be calculated, such as a 6.5\% chance of a crab weight between 16 and 18 grams.
 
 \subsection{One sample}
 
@@ -857,8 +869,24 @@ To log-transform data:
 \end{outline}
 
 \subsubsection{The exponential distribution}
+The exponential distribution, utilized for data measuring time until an event, is defined by a rate parameter \(\lambda > 0\) with density function \(g(y) = \lambda e^{-\lambda y}\) for \(y > 0\). This distribution is suitable for strictly positive variables, with the probability for a variable \(Y\) to fall within an interval \((a, b)\) given by \(P(a < Y < b) = e^{-\lambda a} - e^{-\lambda b}\).
+
+The mean of this distribution is \(\frac{1}{\lambda}\), hence \(\lambda\) can be estimated as \(\hat{\lambda} = \frac{1}{\bar{y}}\) from a sample with data points \(y_1, y_2, \ldots, y_n\).
+
+For example, in a study of interspike intervals from neurons in guinea pigs, with an average interval of 0.872, the rate \(\lambda\) was estimated as \(\hat{\lambda} = 1.147\). This estimation appeared to match the data well, as shown in the histograms juxtaposed with the exponential distribution's density. However, a detailed examination indicated a mismatch, particularly fewer observations near zero than the exponential model would predict, highlighting the critical need for careful data evaluation against the chosen model.
 
 \subsection{The central limit theorem}
+The Central Limit Theorem (CLT) is a pivotal statistical principle stating that the distribution of the sample mean of independent, identically distributed (iid) variables approximates a normal distribution as the sample size, \(n\), grows, regardless of the original distribution's form. Formally, if \(y_1, y_2, \ldots, y_n\) are iid variables with mean \(\mu\) and standard deviation \(\sigma\), then the sample mean \(\bar{y} = \frac{1}{n} \sum_{i=1}^{n} y_i\) approaches a normal distribution, \(N\left(\mu, \frac{\sigma^2}{n}\right)\), for sufficiently large \(n\).
+
+This theorem highlights the ubiquity of the normal distribution, suggesting that for large samples, averages or means of data can be approximated through the normal distribution, regardless of the original data's distribution.
+
+Illustrations of the CLT include:
+
+1. **Binary Variables**: For binary variables taking values 0 or 1 with probabilities \(1-p\) and \(p\), respectively, the distribution of the sample mean converges to a normal distribution with mean \(p\) and standard deviation \(\sqrt{\frac{p(1-p)}{n}}\) for large sample sizes.
+
+2. **Bimodal Distribution**: In the case of a bimodal distribution, such as the concentration of a substance in cow milk differing between healthy and diseased cows, the sample mean across several observations trends towards a normal distribution with increasing \(n\), despite the original distribution's distinct bimodality, as demonstrated through simulation.
+
+These examples underscore the CLT's broad applicability, affirming the normal distribution's central role in statistical analysis and probability theory.
 
 \subsection{R Code}
 
@@ -946,6 +974,8 @@ p(\boldsymbol{x})= \frac {1} {(2\pi)^{D/2} |\boldsymbol{\Sigma}|^{1/2}} \exp{[-\
 
 When we plot the distribution, the tilt indicates the relationship (covariance) between the variables, while the shape indicates the variance of the variables. Circular plots indicate that the variables have the same variance.
 
+\pagebreak
+
 \subsection{R Code}
 
 \subsubsection*{Law of Large Numbers}
@@ -1009,5 +1039,1265 @@ filled.contour(heights, weights, density_values,
                key.title = title(main = "Density Levels", cex.main = 1),
                key.axes = axis(4, las = 1))
 \end{lstlisting}
+
+\pagebreak
+
+\section{Statistical models, estimation}
+
+Statistical inference enables drawing broad conclusions from data. Statistical models are central for discussing estimation, confidence intervals, hypothesis testing, and prediction. The focus is on normal linear models where the response variable linearly depends on explanatory variables, with independent, normally distributed random deviations. These include linear regression, one-way ANOVA, and single sample models, expanding to more complex models in later chapters.
+
+While linear models suit continuous variables, they don't apply to categorical data due to the inappropriate normal distribution. However, the underlying statistical principles, like estimation and hypothesis testing, remain crucial across all types of statistical analyses.
+
+\subsection{Statistical models}
+
+Formally, a statistical model is a set pf probability distributions $\mathcal{P}(\Omega)$ on the sample space $\Omega$. 
+
+It links a response variable to explanatory variables and random variation. In linear models, the response is quantitative, and explanatory variables, also known as covariates or predictors, can be quantitative or categorical (factors). The model comprises a fixed part, describing the response's systematic change with explanatory variables, and a random part, accounting for biological variation unexplained by these variables.
+
+For example, with digestibility percent as $y$ and stearic acid level as $x$, the fixed part follows $y=\alpha x + \beta$, where $\alpha$ and $\beta$ are constants. The random part describes variations around the predicted linear relationship.
+
+In another case, the amount of organic material (response) varies by antibiotic type (categorical explanatory variable or factor). The fixed part describes differences in response among antibiotic types, and the random part captures variations within the same type.
+
+Models can include multiple explanatory variables of different types, expanding in complexity. However, some datasets, like crab weight, may lack explanatory variables, focusing solely on the response with no linking factors.
+
+\subsubsection{Model assumptions}
+
+In linear regression, the relationship between the response variable $y_i$ and the explanatory variable $x_i$ is expressed as:
+
+\begin{align*}
+y_i = \alpha + \beta x_i + e_i, i=1,...,n
+\end{align*}
+
+Here, $\alpha$ (intercept) and $\beta$ (slope) are unknown parameters estimated from the data, and $e_i$ represents random variation.
+
+\pagebreak
+
+In one-way ANOVA, with $k$ groups $\alpha_1,...,\alpha_k$, the model is:
+
+\begin{align*}
+y_i = \alpha_{g(i)} + e_i, i=1,...,n
+\end{align*}
+
+where $\alpha_{g(i)}$ denotes the mean of the group to which $y_i$ belongs, identified by $g(i)=x_i$, and $e_i$ is the random variation.
+
+In general, the model is written as:
+
+\begin{align*}
+y_i=\mu_i + e_i, i=1,...,n
+\end{align*}
+
+where $\mu_i$ encapsulates the contribution from explanitory variables, linear in parameters. Assuming one explanatory variable $x$, and defining $\theta_1,...,\theta_p$ as parameters, the function $f$ represents how $u_i$ depends on $x_i$ and parameters:
+
+\begin{align*}
+u_i=f(x_i;\theta_1,...,\theta_p)
+\end{align*}
+
+Here, $\theta_1,...,\theta_p$ are termed mean parameters or fixed effect parameters. Although this notation suggests one explanatory variable $x$, the function $f$ can incorporate multiple variables, exemplified as $u_i=f(x_{i1},x_{i2};\theta_1,...,\theta_p)$.
+
+Comparing the linear regression model to the one-way ANOVA model:
+
+\begin{itemize}
+    \item \textbf{Linear Regression}: For $p=2$ parameters, ($\theta_1$,$\theta_2$) equate to ($\alpha$,$\beta$), with the function defined as $f(x_i;\alpha,\beta)=\alpha+\beta \cdot x_i$. The function is continuous, allowing interpolation between points, and is defined for all $x_i$, forming a straight line.
+    \item \textbf{One-Way ANOVA}: For $p=k$ groups, $\theta_j$ aligns with $a_j$, and $f(x_i;\alpha_1,...,\alpha_k)=\alpha_{g(i)}=\alpha_{x_i}$. Here, $x_i$ values denote different groups; thus, interpolation doesn't apply, and $x_i$ may be non-quantitative. Unlike linear regression, ANOVA doesn't constrain function values to a line.
+\end{itemize}
+
+Remainder terms $e_1,...,e_n$ are independent and follow a normal distribution $N(0,\sigma^2)$, meaning they have zero mean and contribute to the variability around the expected value, $\mu_i$, of $y_i$. These standard terms ensure $y_i \sim N(\mu_i, \sigma^2)$, where $\mu_i$ is the expected value and $\sigma$ the common standard deviation, indicating typical deviation from the expected value.
+
+The linear model's key characteristics include:
+
+\begin{itemize}
+    \item \textbf{Mean}: $\mu_i$ depends linearly on parameters and explanatory variables.
+    \item \textbf{Variance Homogeneity}: All $y_i$ share the same standard deviation $\sigma$.
+    \item \textbf{Normality}: $y_i$ are normally distributed.
+    \item \textbf{Independence}: All $y_i$ are independent.
+\end{itemize}
+
+While the dependence on explanatory variables varies between models (e.g., linear regression vs. one-way ANOVA), the last three assumptions remain consistent across all linear models. In non-linear models, $\mu_i$ may depend on variables in a non-linear manner, e.g., $u_i=\alpha \cdot \exp (\beta \cdot x_i)$, which will be further explored later. Model assumptions must be validated using data, typically through residual analysis.
+
+\subsubsection{Model formulas}
+
+Statistical analyses are typically conducted using software programs, where a model formula, such as \verb|y = x|, is used to specify the relationship between the response variable \verb|y| and the explanatory variable \verb|x|. For example, \verb|digest = acid| represents a model where digestibility is influenced by acid levels, and \verb|organic =| \verb|type| indicates organic material's dependence on antibiotic types.
+
+The interpretation of the model formula changes based on the explanatory variable's nature: it represents linear regression if \verb|x| is quantitative, and one-way ANOVA if \verb|x| is categorical (a factor). Correct coding of the explanatory variable is crucial to ensure the software performs the correct analysis.
+
+The model formula \verb|y = x - 1| is used for fitting models without an intercept, affecting the analysis differently depending on whether the model is linear regression or one-way ANOVA.
+
+Model formulas simplify statistical model specification, especially in complex scenarios involving multiple explanatory variables. While assumptions like variance homogeneity, normality, and independence are vital for describing random variation, they are usually treated as technical and constant across analyses, hence not typically included in the model formula.
+
+\subsubsection{Linear regression}
+
+In the context where the explanatory variable $x$ is quantitative, the linear regression model is formulated as:
+
+\begin{align*}
+    y_i=\alpha + \beta \cdot x_i + e_i, i=1,...,n
+\end{align*}
+
+where $e_1,...,e_n$ are independent and normally distributed with mean 0 and variance $\sigma^2$, symbolized as $N(0,\sigma^2)$. This setup implies that each $y_i$ is also independent and follows a normal distribution $N(\alpha + \beta \cdot x_i,\sigma^2)$. The model parameters are the intercept $\alpha$, the slope $\beta$, and the standard deviation $\sigma$.
+
+The terms $e_1,...,e_n$ denote the residuals or vertical deviations from the fitted line, with the assumption of variance homogeneity indicating that these deviations are consistently distributed across all $x$ values. This implies that approximately 95\% of the observations lie within $2\sigma$ of the regression line, regardless of the $x$ values.
+
+The model formula \verb|y = x| translates to equation at the beginning by default, including the intercept. If a model without an intercept is required, indicating a line through the origin (0,0), it should be explicitly defined in the model formula as \verb|y = x - 1|.
+
+The linear regression model strictly analyzes the influence of $x$ on $y$, treating $x$ values as fixed and known, making the model conditional on $x$. If the variation of $x$ were also of interest, a more complex, two-dimensional model would be necessary.
+
+\subsubsection{Comparison of groups}
+
+In scenarios involving $k$ distinct groups, the one-way ANOVA model is employed, defined as:
+
+\begin{align*}
+    y_i=\alpha_{g(i)}+e_i, i=1,...,n
+\end{align*}
+
+Here, $x_i=g(i)$ specifies the $i$-th observation. The terms $e_1,...,e_n$ are assumed to be independent and normally distributed with mean zero and variance $\sigma^2$, leading to the independent distributions of $y_1,...,y_n$ as:
+
+\begin{align*}
+    y_i \sim N(\alpha_{g(i)}, \sigma^2), i=1,...,n
+\end{align*}
+
+This assumes normal distributions within each group with different means ($\alpha_1,...,\alpha_k$) but identical standard deviation $\sigma$ across all groups, indicating within-group variation.
+
+The parameters of this model are $\alpha_1,...,\alpha_k$ (mean or population average of each group) and $\sigma$. Differences between group means, such as $\alpha_j - \alpha_l$, are often of interest for comparing the $j$-th and $l$-th groups.
+
+In cases where $x$ represents a categorical variable or factor, the model formula \verb|y = x| reflects the one-way ANOVA structure. The clarity of the model depends on how groups are designated; numeric labels should be treated as categorical group identifiers to avoid misinterpretation as quantitative variables, which would inadvertently lead to a linear regression analysis instead.
+
+For two unpaired samples, representing two groups, the situation simplifies to a special case of one-way ANOVA with $k=2$, under the assumption of equal standard deviations across both groups, thus:
+
+$y_i \sim N(\alpha_1,\sigma^2)$ if in group 1, and $y_i \sim N(\alpha_2, \sigma^2)$ if in group 2.
+
+\subsubsection{One sample}
+
+For the crab weight data without an explanatory variable, the analysis assumes all weights ($y_1,...,y_n$) are independent samples from the same normal distribution, expressed as
+
+\begin{align*}
+    y_i \sim N(\mu,\sigma^2), i=1,...,n
+\end{align*}
+
+This scenario, known as the one-sample case, presumes all observations are from a population with a single mean $\mu$ and variance $\sigma^2$. The model can also be written as:
+
+$y_i=\mu + e_i, i=1,...,n$
+
+where $e_1,...,e_n$ are independent, normally distributed with mean zero and variance $\sigma^2$. Here, $\mu$ represents the population mean, and $\sigma$ represents the standard deviation.
+
+The model formula for this case is written as \verb|y=1|, symbolizing a constant mean for all observations, applicable in the analysis of single sample scenarios.
+
+In the context of paired samples, such as measurements from the same subjects under different conditions, the difference $d_i=y_{i2}-y_{i1}$ or the ratio $f_i=y_{i2}/y_{i1}$ between paired measurements ($y_{i1},y_{i2}$) is treated as a single sample response. This approach effectively converts paired observations into individual data points for analysis, assuming these differences or ratios represent independent samples from a normal distribution.
+
+\subsection{Estimation}
+We explore statistical models expressed as:
+\begin{equation}
+y_i = \mu_i + e_i, \quad i = 1, \ldots, n,
+\end{equation}
+where the error terms \(e_1, \ldots, e_n\) are independent and distributed according to \(N(0, \sigma^2)\), and the means \(\mu_i\) are functions of explanatory variables through unknown parameters, represented as:
+\begin{equation}
+\mu_i = f(x_i; \theta_1, \ldots, \theta_p).
+\end{equation}
+Our goal is to estimate the parameters \(\theta_1, \ldots, \theta_p\) using sample data, acknowledging that different samples may lead to varying estimates. This necessitates a focus on the variability and precision of these estimates, including the calculation of standard errors and confidence intervals. These intervals provide ranges that, to a certain extent, align with the observed data. Although \(\sigma^2\) is not the primary interest, its role is critical in determining the precision of the estimates for \(\theta\)s.
+
+\subsubsection{Least squares estimation of the mean parameters}
+Estimation in statistical modeling is aimed at identifying parameter values (\(\theta_1, \ldots, \theta_p\)) that best align the model with observed data. This concept of fit is operationalized via squared residuals, leading to the method of least squares estimation. This method, already applied in contexts such as linear regression and one-way ANOVA, is grounded in the minimization of the sum of squared deviations:
+\begin{equation}
+Q(\theta_1, \ldots, \theta_p) = \sum_{i=1}^{n} \left(y_i - f(x_i; \theta_1, \ldots, \theta_p)\right)^2.
+\end{equation}
+Here, \(Q\) measures the fit of the model, with the goal being to minimize these squared differences to achieve the closest match between observed values \(y_i\) and their expected counterparts from the model \(f(x_i; \theta_1, \ldots, \theta_p)\).
+
+The least squares estimates (\(\hat{\theta}_1, \ldots, \hat{\theta}_p\)) are identified by finding the parameter values that minimize \(Q\). This involves computing the partial derivatives of \(Q\) with respect to each parameter \(\theta_j\) and solving the set of equations \(\frac{\partial Q}{\partial \theta_j} = 0\) for \(j = 1, \ldots, p\). The solution to these equations corresponds to a minimum of \(Q\), ensuring the model is as closely fitted to the data as possible under the least squares criterion.
+
+\subsubsection{Estimation of the standard deviation $\sigma$}
+
+Upon inserting parameter estimates into our model, we calculate the predicted (fitted) values, residuals, and the residual sum of squares as follows:
+\begin{align}
+\hat{y}_i &= \hat{\mu}_i = f(x_i; \hat{\theta}_1, \ldots, \hat{\theta}_p), \\
+r_i &= y_i - \hat{y}_i, \\
+SS_e &= \sum_{i=1}^{n} (y_i - \hat{y}_i)^2. \tag{5.8}
+\end{align}
+The fitted value \(\hat{y}_i\) approximates the expected outcome for observation \(i\), and the residual \(r_i\) serves as our estimate for the error term \(e_i\), given that \(e_i = y_i - \mu_i\). To estimate the variance \(\sigma^2\), we use the residuals:
+\begin{equation}
+s^2 = \hat{\sigma}^2 = \frac{SS_e}{n - p} = \frac{1}{n - p} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2. \tag{5.9}
+\end{equation}
+Here, \(n - p\) represents the residual degrees of freedom (denoted \(df_e\)), making \(s^2\) (or MSe) a critical measure of residual variance. This standardization ensures that \(s^2\)'s expected value is \(\sigma^2\).
+
+The estimated standard deviation, denoted \(\hat{\sigma}\), is the square root of \(s^2\):
+\begin{equation}
+\hat{\sigma} = s = \sqrt{s^2} = \sqrt{\frac{SS_e}{df_e}}. \tag{5.10}
+\end{equation}
+This formulation aligns with estimations encountered in various models, confirming the least squares estimates' efficiency in minimizing variance estimates.
+
+
+\subsubsection{Standard errors and distribution of least square estimates}
+
+The process of estimating parameters from observed data yields questions about the reliability and variability of these estimates. Specifically, in linear models, the distribution of least squares estimates provides a basis for answering such questions. In the one-sample scenario, where observations \(y_1, \ldots, y_n\) are independent and \(N(\mu, \sigma^2)\) distributed, the sample mean \(\bar{y}\) serves as an estimator for \(\mu\), characterized by:
+\begin{equation}
+\hat{\mu} = \bar{y} \sim N(\mu, \frac{\sigma^2}{n}). \tag{5.11}
+\end{equation}
+This demonstrates that \(\hat{\mu}\) is both unbiased and consistent, improving in precision with increasing sample size.
+
+Extending to all linear models:
+\begin{equation}
+y_i = \mu_i + e_i, \quad i = 1, \ldots, n, \tag{5.12}
+\end{equation}
+the least squares estimates \(\hat{\theta}_1, \ldots, \hat{\theta}_p\) are unbiased, consistent, and normally distributed. The variance associated with each estimate, denoted \(k_j \cdot \sigma^2\), reduces as the sample size increases:
+\begin{equation}
+\hat{\theta}_j \sim N(\theta, k_j \cdot \sigma^2). \tag{5.13}
+\end{equation}
+The standard error of these estimates, indicative of their variability, is given by:
+\begin{equation}
+SE(\hat{\theta}_j) = s\sqrt{k_j}. \tag{5.14}
+\end{equation}
+While each estimate is considered individually here, it's important to note that estimates may be correlated, influencing the interpretation of variability among them. This complexity, though beyond our current exploration, underscores the nuanced understanding required for comprehensive statistical analysis.
+
+
+\subsubsection{Linear regression}
+The linear regression model is given by:
+\begin{equation}
+y_i = \alpha + \beta \cdot x_i + e_i, \quad i = 1, \ldots, n, \tag{5.15}
+\end{equation}
+where \(e_1, \ldots, e_n\) are independent and \(N(0, \sigma^2)\) distributed. The least squares estimates for \(\beta\) and \(\alpha\) are:
+\begin{align}
+\hat{\beta} &= \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n}(x_i - \bar{x})^2}, \\
+\hat{\alpha} &= \bar{y} - \hat{\beta} \cdot \bar{x}.
+\end{align}
+Defining \(SS_x = \sum_{i=1}^{n}(x_i - \bar{x})^2\), the distributions of \(\hat{\beta}\) and \(\hat{\alpha}\) are:
+\begin{align}
+\hat{\beta} &\sim N\left(\beta, \frac{\sigma^2}{SS_x}\right), \\
+\hat{\alpha} &\sim N\left(\alpha, \sigma^2\left(\frac{1}{n} + \frac{\bar{x}^2}{SS_x}\right)\right).
+\end{align}
+As sample size increases, \(SS_x\) increases, decreasing the variances of \(\hat{\beta}\) and \(\hat{\alpha}\), thus enhancing precision.
+
+The standard errors are calculated as:
+\begin{align}
+SE(\hat{\beta}) &= \frac{s}{\sqrt{SS_x}}, \\
+SE(\hat{\alpha}) &= s \sqrt{\frac{1}{n} + \frac{\bar{x}^2}{SS_x}},
+\end{align}
+where \(s = \sqrt{\frac{SS_e}{dfe}} = \sqrt{\frac{1}{n - 2} \sum_{i=1}^{n}(y_i - \hat{\alpha} - \hat{\beta} \cdot x_i)^2}\).
+
+For a new value \(x_0\), the expected response \(\hat{\mu}_0 = \hat{\alpha} + \hat{\beta} \cdot x_0\) is normally distributed, with:
+\begin{equation}
+\hat{\mu}_0 \sim N\left(\alpha + \beta \cdot x_0, \sigma^2\left(\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{SS_x}\right)\right),
+\end{equation}
+and its standard error:
+\begin{equation}
+SE(\hat{\mu}_0) = s \sqrt{\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{SS_x}}. \tag{5.16}
+\end{equation}
+This model ensures that \(\hat{\mu}_0\) is an unbiased and consistent estimate for the expected value at \(x_0\).
+
+\textit{Example 5.3 (Stearic acid and digestibility of fat):} Given estimates \(\hat{\alpha} = 96.5334\), \(\hat{\beta} = -0.9337\), \(SS_e = 61.7645\), \(s^2 = 8.8234\), \(s = 2.970\), \(\bar{x} = 14.5889\), and \(SS_x = 1028.549\), for a stearic acid level \(x_0 = 20\%\), the digestibility is expected to decrease by 0.93 percentage points for a 1 percentage point increase in stearic acid, with a predicted digestibility of \(77.859\) and a standard error of \(1.1096\) for the prediction.
+
+\subsubsection{Comparison of groups}
+In a one-way ANOVA framework, the model is formulated as:
+\begin{equation}
+y_i = \mu_{g(i)} + e_i, \quad i = 1, \ldots, n,
+\end{equation}
+where \(g(i)\) denotes the group of the \(i\)th observation, and \(e_1, \ldots, e_n\) are independent \(N(0, \sigma^2)\) distributed errors. The least squares estimates for the group means \(\mu_1, \ldots, \mu_k\) are the group averages:
+\begin{equation}
+\hat{\mu}_j = \bar{y}_j = \frac{1}{n_j} \sum_{\{i | g(i) = j\}} y_i \sim N\left(\mu_j, \frac{\sigma^2}{n_j}\right).
+\end{equation}
+The standard errors for these estimates are given by:
+\begin{equation}
+SE(\hat{\mu}_j) = s \sqrt{\frac{1}{n_j}},
+\end{equation}
+where \(s\) is the square root of the pooled variance estimate \(s^2 = \frac{SS_e}{dfe}\).
+
+Differences between group means, or contrasts, are of particular interest. For two groups \(j\) and \(l\), the estimate of the difference is:
+\begin{equation}
+\hat{\mu}_j - \hat{\mu}_l = \bar{y}_j - \bar{y}_l,
+\end{equation}
+with the standard error:
+\begin{equation}
+SE(\hat{\mu}_j - \hat{\mu}_l) = s \sqrt{\frac{1}{n_j} + \frac{1}{n_l}}. \tag{5.17}
+\end{equation}
+\textbf{Example 5.4 (Antibiotics and dung decomposition):} For the antibiotics data, estimates for group means and comparisons to the control group are calculated, demonstrating the application of the above formulas. The standard error calculations illustrate the impact of group size on precision, with smaller groups leading to larger standard errors.
+
+This section showcases the methodology for estimating and comparing group means in one-way ANOVA, emphasizing the statistical principles and computations involved.
+
+
+\subsubsection{One sample}
+
+In cases involving a single sample, where observations \(y_1, \ldots, y_n\) are independent and \(N(\mu, \sigma^2)\) distributed, the estimation formulas adapt to this new terminology as follows:
+\begin{align}
+\hat{\mu} &= \bar{y} \sim N\left(\mu, \frac{\sigma^2}{n}\right), \\
+\hat{\sigma}^2 &= s^2 = \frac{1}{n - 1} \sum_{i=1}^{n} (y_i - \bar{y})^2,
+\end{align}
+leading to the standard error of \(\hat{\mu}\) being:
+\begin{equation}
+SE(\hat{\mu}) = \frac{s}{\sqrt{n}}.
+\end{equation}
+\textbf{Example 5.5 (Crab weights):} For a dataset concerning crab weights, we find that:
+\begin{itemize}
+\item Estimated mean weight, \(\hat{\mu} = \bar{y} = 12.76\),
+\item Sample standard deviation, \(s = 2.25\),
+\item Standard error of the mean, \(SE(\hat{\mu}) = 2.25 \cdot \sqrt{\frac{1}{162}} = 0.177\).
+\end{itemize}
+This example showcases the estimation of the average weight of crabs to be 12.76, with the standard error providing insight into the precision of this estimate.
+
+
+\subsection{Maximum likelihood}
+
+When estimating parameters without clear sample equivalents, the maximum likelihood principle is useful. For instance, estimating the probability ($p$) of becoming pregnant within one cycle can be complex. Traditional methods might not use all data, like only considering first-cycle pregnancies, which gives incomplete estimates (e.g., 0.29 for smokers, 0.41 for nonsmokers). Also, methods ignoring cycles beyond a certain count can overestimate $p$. The maximum likelihood principle, however, uses all available data to provide more accurate and comprehensive estimators, solving these issues.
+
+\subsubsection{The maximum likelihood principle}
+
+The maximum likelihood principle estimates model parameters by maximizing the probability of observed data. This involves constructing a likelihood function, $L(\theta)$, reflecting how likely the observed data are given certain parameter values. The goal is to find parameter values that make this function reach its maximum, known as maximum likelihood estimates (MLEs).
+
+For instance, consider testing 10 chips from a batch with unknown defect rates. If one chip is defective, and the batches could have 10\% or 50\% defective rates, the likelihoods of this outcome under both scenarios can be calculated. The MLE approach would favor the batch with the higher likelihood for the observed data, in this case the 10\% defect rate, guiding a decision between two uncertain options based on which scenario is statistically more probable.
+
+\subsubsection{Likelihood and loglikelihood}
+
+The likelihood function $L(\theta)$ represents the probability of observing a specific dataset given certain parameter values, $\theta$, for the underlying distribution.
+
+\begin{itemize}
+    \item For discrete distributions, the likelihood is the product of the probabilities of each data point $x_i$, given $\theta$, represented as $p_{\theta}(x_i)$. 
+    \item For continuous distributions, where direct probabilities at a specific point are zero, likelihood is defined through the PDF $f_{\theta}(x)$, leading to the likelihood function $L(\theta)=f_{\theta}(x_1) \cdot f_{\theta}(x_2) \cdot ... \cdot f_{\theta}(x_n)$.
+\end{itemize}
+
+The maximal likelihood estimates (MLEs) are values of $\theta$ that maximize the value of $L(\theta)$, or the loglikelihood function $\ell()(\theta)=\text{ln}(L(\theta))$, which simplifies the differentiation process due to the logarithm transforming products into sums.
+
+As an example, for a dataset modeled as a sample from an Exponential distribution with parameter $\lambda$, the likelihood function is $L(\lambda)=\lambda^n \cdot e^{-\lambda \sum_{i=0}^{n} x_i}$, and the loglikelihood function is $\ell (\lambda)=n \text{ln}(\lambda)-\lambda \sum_{i=0}^{n} x_i$. To find the MLE of $\lambda$ we differentiate $\ell (\lambda)$ with respect to $\lambda$ and set it to zero, yielding $\lambda = \frac {1} {\bar{x}_n}$, where $\bar{x}_n$ represents the sample mean.
+
+\subsubsection{Properties of maximum likelihood estimators}
+
+Maximum likelihood estimators (MLEs) are not only universally applicable due to the maximum likelihood principle, but they also possess several desirable statistical properties.
+
+\begin{itemize}
+    \item \textbf{Invariance Principle}: The invariance principle of MLEs dictates that if \(T\) is the MLE for a parameter \(\theta\), then for any invertible function \(g\), \(g(T)\) becomes the MLE for \(g(\theta)\). For instance, if 
+\[
+D_{n} = \sqrt{\frac{1}{n} \sum_{i=1}^{n}(X_{i} - \bar{X}_{n})^2}
+\]
+is the MLE for \(\sigma\) in a normal distribution, then \(D_{n}^2\) is the MLE for \(\sigma^2\).
+
+    \item \textbf{Asymptotic Unbiasedness}: While MLEs may exhibit bias for finite sample sizes, they are asymptotically unbiased. This means that the expected value of an MLE \(T_n\) approaches the true parameter value \(\theta\) as the sample size \(n\) increases infinitely, i.e.,
+\[
+\lim_{n \rightarrow \infty} \mathrm{E}[T_{n}] = \theta.
+\]
+
+    \item \textbf{Asymptotic Minimum Variance}: MLEs attain the minimum possible variance asymptotically among all unbiased estimators, meeting the Cramér-Rao lower bound. This property ensures that MLEs are the most efficient estimators as the sample size becomes large.
+\end{itemize}
+
+\subsection{Bayesian Inference}
+
+Bayesian inference is a method of statistical inference in which Bayes' theorem is used to update the probability for a hypothesis as more evidence or information becomes available. It is an important technique in statistical analysis that differs from classical inference by incorporating prior knowledge into the model.
+
+The foundation of Bayesian inference is Bayes' theorem, which is expressed as:
+
+$$
+\text{Posterior} = \frac{\text{Likelihood} \times \text{Prior}}{\text{Evidence}}
+$$
+
+where:
+\begin{itemize}
+    \item \textbf{Posterior} is the probability of the parameters given the data.
+    \item \textbf{Likelihood} is the probability of the data given the parameters.
+    \item \textbf{Prior} is the initial belief about the parameters, before seeing the data.
+    \item \textbf{Evidence} is the total probability of the data under all possible parameter values.
+\end{itemize}
+
+\subsubsection{Posterior Distribution of Parameters}
+
+The posterior distribution combines the prior distribution and the likelihood of observed data to give a updated distribution reflecting the current state of knowledge. In mathematical terms:
+
+$$
+p(\theta | D) = \frac{p(D | \theta) \cdot p(\theta)}{p(D)}
+$$
+
+where \( \theta \) represents the parameters, and \( D \) represents observed the data.
+
+\subsubsection{Posterior Summaries}
+
+The posterior distribution's summaries include the Conditional Mean (CM) estimate and the Maximum A Posteriori (MAP) estimate.
+
+\begin{itemize}
+    \item \textbf{CM estimate}: The CM estimate is the expected value of the posterior distribution:
+\[
+\text{CM} = E[\theta | \text{D}] = \int \theta \times p(\theta | \text{D}) \, d\theta
+\]
+\textbf{Pros:} Represents the average parameter value considering the posterior distribution; includes all possible parameter values weighted by their posterior probabilities.
+
+\textbf{Cons:} Computationally intensive for complex models; may not represent the most probable parameter value if the distribution is skewed.
+
+    \item \textbf{MAP Estimate}: The MAP estimate identifies the parameter value that maximizes the posterior distribution:
+\[
+\text{MAP} = \underset{\theta}{\text{argmax}} \, p(\theta | \text{D})
+\]
+\textbf{Pros:} Provides the most probable parameter value; often computationally simpler than finding the CM.
+
+\textbf{Cons:} May be sensitive to the choice of prior; does not consider the full distribution of parameter values.
+
+\end{itemize}
+
+\section{Confidence intervals}
+
+Confidence intervals provide a range of plausible values for an unknown parameter, allowing statements about the level of confidence that the true parameter value is within this range. This approach differs from giving a single point estimate and allows the selection of a confidence level.
+
+\subsection{General Principle}
+Sample statistics, like the sample mean and variance, are used as estimators for the true values ($\mu$ and $\sigma^2$) of a distribution. These estimators are evaluated for their bias and mean squared error (MSE) to judge their quality. Given an estimator $T$ for a parameter $\theta$, its realization $t$ serves as the point estimate. However, since results can vary with different samples, an interval estimate is more informative than a point estimate.
+
+By using the sampling distribution of an estimator, we can create confidence intervals for unknown parameters. If $T$ is an unbiased estimator for $\theta$ with a standard deviation of $\sigma_T$, then from Chebyshev's inequality, it follows that:
+
+\begin{equation*}
+P\left(|T-\theta| < 2\sigma_T\right) \geq \frac{3}{4}.
+\end{equation*}
+
+In an example, such as Michelson's speed of light measurements, this implies that, with at least 75\% probability, $T$ is within $200 \text{ km/sec}$ of the true parameter $\theta$. Equivalently, we can express the uncertainty about $\theta$ as:
+
+\begin{equation*}
+\theta \in (T-200, T+200) \text{ with probability at least } 75\%.
+\end{equation*}
+
+When applying this to specific data, such as these measurements, we derive a realized interval estimate. However, once a specific interval is calculated, the probability statement changes to a confidence statement:
+
+\begin{equation*}
+\theta \in (299652.4, 300052.4) \text{ with confidence at least } 75\%.
+\end{equation*}
+
+This reflects the methodological shift from a probabilistic statement about the estimator to a confidence statement about the parameter, based on the actual data obtained and the properties of the estimator.
+
+\subsubsection{General defenition}
+
+Confidence intervals are typically expressed in the form $(t-c \cdot \sigma_{T}, t+c \cdot \sigma_{T})$, where $c$ is usually close to 2 or 3, indicating a higher confidence level than more conservative intervals. 
+
+A $100\gamma\%$ confidence interval for a parameter $\theta$ from a dataset $x_1, \ldots, x_n$, modeled as realizations of random variables $X_1, \ldots, X_n$, is defined as follows: if there exist sample statistics $L_n=g(X_1, \ldots, X_n)$ and $U_n=h(X_1, \ldots, X_n)$ such that $P(L_n < \theta < U_n) = \gamma$ for every $\theta$, then $(l_n, u_n)$, where $l_n=g(x_1, \ldots, x_n)$ and $u_n=h(x_1, \ldots, x_n)$, constitutes a $100\gamma\%$ confidence interval for $\theta$. $\gamma$ here is the confidence level, a number between 0 and 1.
+
+In cases where exact sample statistics $L_n$ and $U_n$ do not exist, a conservative confidence interval may be used, which satisfies $P(L_n < \theta < U_n) \geq \gamma$. Although such intervals ensure a minimum confidence level, they might be more inclusive than necessary, making them conservative.
+
+An illustrative example uses simulation to construct 90\% confidence intervals for the mean $\mu$ of a normal distribution based on sample data. In practice, multiple confidence intervals generated from different datasets give a visual representation of their effectiveness; for instance, in 50 generated intervals for $\mu=0$, 46 might contain the true $\mu$, showcasing the operational concept of confidence intervals.
+
+In the following sections, we explore confidence intervals for the mean, starting with known variance cases and progressing to unknown variance and non-normal distributions, including the use of bootstrapping and central limit theorem applications for large sample sizes.
+
+\subsection{Normal Data and Confidence Intervals}
+
+Consider a sample $X_{1}, \ldots, X_{n}$ from a normal distribution $N(\mu, \sigma^{2})$, where $\mu$ is the parameter of interest and $\sigma^{2}$ is known. Confidence intervals for $\mu$ can be derived using the critical values $z_{p}$ from the standard normal distribution, satisfying $\mathrm{P}(Z \geq z_{p})=p$.
+
+The sample mean from a normal distribution $N(\mu, \sigma^{2}/n)$ is denoted by $\bar{X}_{n}$, and the standardized form $\frac{\bar{X}_{n}-\mu}{\sigma / \sqrt{n}}$ follows an $N(0,1)$ distribution. For a confidence level $\gamma$, choose $c_{l}$ and $c_{u}$ such that $\mathrm{P}(c_{l}<Z<c_{u})=\gamma$. Then, a $100 \gamma \%$ confidence interval for $\mu$ is:
+\[
+\left(\bar{x}_{n}-c_{u} \frac{\sigma}{\sqrt{n}}, \bar{x}_{n}-c_{l} \frac{\sigma}{\sqrt{n}}\right).
+\]
+Typically, $\alpha=1-\gamma$ is split equally between the tails, yielding:
+\[
+\left(\bar{x}_{n}-z_{\alpha / 2} \frac{\sigma}{\sqrt{n}}, \bar{x}_{n}+z_{\alpha / 2} \frac{\sigma}{\sqrt{n}}\right).
+\]
+
+For unknown variance, the formula changes as the standard normal distribution is no longer applicable. Instead, with $S_{n}$ as the sample standard deviation, the formula $\frac{\bar{X}_{n}-\mu}{S_{n} / \sqrt{n}}$ follows a t-distribution with $n-1$ degrees of freedom, resulting in a $100(1-\alpha)\%$ confidence interval for $\mu$:
+\[
+\left(\bar{x}_{n}-t_{n-1, \alpha / 2} \frac{S_{n}}{\sqrt{n}}, \bar{x}_{n}+t_{n-1, \alpha / 2} \frac{S_{n}}{\sqrt{n}}\right).
+\]
+
+Examples include determining confidence intervals for the gross calorific value of coal, with the interval's width and critical values depending on whether $\sigma$ is known or estimated.
+
+\subsection{Bootstrap Confidence Intervals}
+
+When the normal distribution does not adequately model the data, especially with small samples, bootstrapping is recommended for constructing confidence intervals for an unknown mean $\mu$ from a dataset $x_{1}, \ldots, x_{n}$ from some distribution $F$. Normally, we find $c_{l}$ and $c_{u}$ for the confidence interval based on the studentized mean $T=\frac{\bar{X}_{n}-\mu}{S_{n} / \sqrt{n}}$. In bootstrapping, we estimate the distribution $F$ with $\hat{F}$, sample $X_{1}^{*}, \ldots, X_{n}^{*}$ from $\hat{F}$, and use $T^{*}=\frac{\bar{X}_{n}^{*}-\mu^{*}}{S_{n}^{*} / \sqrt{n}}$ to approximate $T$'s distribution. 
+
+We generate many bootstrap samples and calculate corresponding $t^{*}$ values, from which we derive the critical values $c_{l}^{*}$ and $c_{u}^{*}$ that approximate $c_{l}$ and $c_{u}$. Thus, a $100(1-\alpha)\%$ bootstrap confidence interval for $\mu$ is:
+
+\[
+\left(\bar{x}_{n}-c_{u}^{*} \frac{s_{n}}{\sqrt{n}}, \bar{x}_{n}-c_{l}^{*} \frac{s_{n}}{\sqrt{n}}\right).
+\]
+
+For instance, with software data exhibiting right skewness, a $90\%$ bootstrap confidence interval was found using the $5$th and $95$th percentiles of the $t^{*}$ values. The bootstrap method provides a more accurate reflection of the actual data distribution, particularly for skewed distributions, compared to the standard t-distribution based intervals. This results in more accurate confidence intervals, particularly for non-normal data.
+
+\subsection*{Large Samples and Confidence Intervals}
+
+The central limit theorem suggests that for large sample sizes $n$, the distribution of the studentized mean $\frac{\bar{X}_{n}-\mu}{S_{n} / \sqrt{n}}$ approaches the standard normal distribution. This foundation supports the construction of large sample confidence intervals. For a large enough sample size from any distribution $F$ with expectation $\mu$, the approximate $100(1-\alpha) \%$ confidence interval for $\mu$ is:
+
+\[
+\left(\bar{x}_{n}-z_{\alpha / 2} \frac{s_{n}}{\sqrt{n}}, \bar{x}_{n}+z_{\alpha / 2} \frac{s_{n}}{\sqrt{n}}\right).
+\]
+
+However, determining "how large is large enough" depends on the distribution characteristics and the desired accuracy. Simulation results for different distributions and sample sizes provide empirical coverage probabilities, aiding in assessing the adequacy of sample size for accurate confidence intervals. For skewed distributions, larger sample sizes might be needed to achieve desired coverage levels.
+
+For instance, Rutherford and Geiger's 1910 study on alpha-particle emission employed a significantly large dataset to construct a 98\% confidence interval for the expected number of particles, using the large sample method, which resulted in:
+
+\[
+\left(3.8715-2.33 \frac{1.9225}{\sqrt{2608}}, 3.8715+2.33 \frac{1.9225}{\sqrt{2608}}\right)=(3.784,3.959).
+\]
+
+\section{More on Confidence Intervals}
+
+This sections extends the discussion of confidence intervals beyond the expectation-focused cases in last section. Initially, we explore confidence intervals for the binomial distribution parameter $p$, then generalize the approach to construct confidence intervals. Following this, one-sided confidence intervals and determinations of sample size for specific interval widths are discussed.
+
+\subsection{The Probability of Success}
+When estimating the proportion $p$ in a binomial distribution $\operatorname{Bin}(n, p)$, typically the sample proportion $X/n$ is used as an estimator. The Wilson method provides approximate $100(1-\alpha)\%$ confidence intervals for large $n$, despite its confidence level potentially deviating for $p$ near 0 and 1.
+
+The normal approximation of the binomial leads to the inequality for constructing confidence intervals:
+\[
+-z_{\alpha / 2}<\frac{\frac{X}{n}-p}{\sqrt{\frac{p(1-p)}{n}}}<z_{\alpha / 2}
+\]
+which translates to a quadratic inequality after solving for $p$:
+\[
+\left(\frac{X}{n}-p\right)^{2}-\left(z_{\alpha / 2}\right)^{2} \frac{p(1-p)}{n}<0.
+\]
+Upon substitution of actual sample values and solving for $p$, we obtain the confidence interval.
+
+For instance, for a sample where 78 out of 125 voters support a candidate, with a $95\%$ confidence level, the confidence interval for the population proportion $p$ would be $(0.54,0.70)$, derived from the quadratic inequality.
+
+\subsubsection*{Coverage probabilities and alternative methods}
+An alternative method for constructing confidence intervals for the binomial parameter $p$, especially for $p$ near 0 or 1, is the Agresti-Coull method. The method adjusts the original count $X$ and the sample size $n$ as follows:
+\[
+\tilde{X} = X + \frac{z_{\alpha/2}^2}{2}, \quad \tilde{n} = n + z_{\alpha/2}^2,
+\]
+and calculates the adjusted proportion:
+\[
+\tilde{p} = \frac{\tilde{X}}{\tilde{n}}.
+\]
+The approximate $100(1-\alpha)\%$ confidence interval for $p$ is then given by:
+\[
+\left(\tilde{p} - z_{\alpha / 2} \sqrt{\frac{\tilde{p}(1-\tilde{p})}{\tilde{n}}}, \tilde{p} + z_{\alpha / 2} \sqrt{\frac{\tilde{p}(1-\tilde{p})}{\tilde{n}}}\right).
+\]
+
+\subsection{Is there a general method}
+
+To construct confidence intervals in new situations, consider a random sample $X_{1}, \ldots, X_{n}$ from a shifted exponential distribution $X_{i} = \delta + Y_{i}$ where $Y_{1}, \ldots, Y_{n}$ are from an $\operatorname{Exp}(1)$ distribution. The minimum value $T = \min \{X_{1}, \ldots, X_{n}\}$ serves as the maximum likelihood estimator for the minimum lifetime $\delta$. Given that $M = \min \{Y_{1}, \ldots, Y_{n}\}$ follows an $\operatorname{Exp}(n)$ distribution, the distribution function of $T$ is defined as:
+
+\begin{align*}
+F_{T}(a) = \mathrm{P}(T \leq a) = \begin{cases}
+0, & \text{for } a < \delta \\
+1 - \mathrm{e}^{-n(a-\delta)}, & \text{for } a \geq \delta
+\end{cases}
+\end{align*}
+
+For constructing a confidence interval for $\delta$, we solve $\mathrm{P}(c_{l} < T < c_{u}) = 1 - \alpha$ by setting $\mathrm{P}(T \leq c_{l}) = \mathrm{P}(T \geq c_{u}) = \frac{\alpha}{2}$. This leads to:
+
+\[
+c_{l} = \delta - \frac{1}{n} \ln \left(1-\frac{\alpha}{2}\right), \quad c_{u} = \delta - \frac{1}{n} \ln \left(\frac{\alpha}{2}\right).
+\]
+
+A $100(1-\alpha)\%$ confidence interval for $\delta$ is therefore:
+
+\[
+\left(t + \frac{1}{n} \ln \left(\frac{\alpha}{2}\right), t + \frac{1}{n} \ln \left(1 - \frac{\alpha}{2}\right)\right).
+\]
+
+For $\alpha = 0.05$, the confidence interval becomes:
+
+\[
+\left(t - \frac{3.69}{n}, t - \frac{0.0253}{n}\right).
+\]
+
+
+\subsubsection*{Remark about a general method}
+
+If a sample statistic $T$ and unknown parameter $\theta$ from a random sample $X_{1}, \ldots, X_{n}$ can be linked through functions $g(\theta)$ and $h(\theta)$ such that $\mathrm{P}(g(\theta) < T < h(\theta)) = 1-\alpha$ for all $\theta$, then $\left(h^{-1}(t), g^{-1}(t)\right)$ forms a $100(1-\alpha)\%$ confidence interval for $\theta$. This approach can be applied to derive confidence statements about $\theta$ when $g$ and $h$ are strictly increasing functions.
+
+\subsection{One-sided Confidence Intervals}
+
+In scenarios such as evaluating a shipment's gross calorific content, one-sided confidence intervals can be particularly useful. For instance, when ensuring that the calorific content exceeds a certain threshold, say $31.00 \mathrm{MJ}/\mathrm{kg}$. From earlier data, a two-sided $95\%$ confidence interval for the gross calorific content was $(30.946,31.067)$. In situations requiring only a lower bound, a one-sided confidence interval becomes relevant:
+
+\[
+\mathrm{P}\left(\bar{X}_{n}-t_{n-1, \alpha} \frac{S_{n}}{\sqrt{n}} < \mu \right) = 1 - \alpha.
+\]
+
+This suggests a one-sided $100(1-\alpha)\%$ confidence interval for $\mu$ is:
+
+\[
+\left(\bar{x}_{n}-t_{n-1, \alpha} \frac{s_{n}}{\sqrt{n}}, \infty\right).
+\]
+
+For another example to do with coal, adopting $\alpha = 0.05$ with $t_{21,0.05} = 1.721$, the interval is:
+
+\[
+\left(31.012-1.721 \frac{0.1294}{\sqrt{22}}, \infty\right) = (30.964, \infty).
+\]
+
+This one-sided interval has a lower bound higher than the two-sided one, reflecting that all uncertainty is placed on one side, although it is still below 31.00.
+
+The formal definition of confidence intervals includes one-sided versions. For a statistic $L_{n}$ such that $\mathrm{P}(L_{n} < \theta) = \gamma$ for every $\theta$, $\left(l_{n}, \infty\right)$ is a $100\gamma\%$ one-sided confidence interval for $\theta$, termed a lower confidence bound. Conversely, for $U_{n}$ where $\mathrm{P}(\theta < U_{n}) = \gamma$, the one-sided interval is $\left(-\infty, u_{n}\right)$, with $u_{n}$ being an upper confidence bound.
+
+\subsection{Determining the Sample Size}
+
+The goal is often to achieve as narrow a confidence interval as possible for greater accuracy and more definitive conclusions. To pre-specify the accuracy of a confidence interval, determining the necessary sample size becomes essential. This varies with the type of confidence interval but is guided by common principles.
+
+For instance, consider determining the necessary sample size for testing the calorific content of coal to achieve a $95\%$ confidence interval narrower than $0.05 \mathrm{MJ}/\mathrm{kg}$. Assuming measurements follow a normal distribution with standard deviation $\sigma = 0.1$ under ISO method 1928, the desired confidence level $1-\alpha$ entails a confidence interval width:
+
+\[
+2 \cdot z_{\alpha / 2} \frac{\sigma}{\sqrt{n}}
+\]
+
+To ensure the width does not exceed a certain value $w$, the minimum sample size $n$ should satisfy:
+
+\[
+n \geq \left(\frac{2 z_{\alpha / 2} \sigma}{w}\right)^2.
+\]
+
+In our calorific content example, with $w = 0.05$, $\sigma = 0.1$, and $z_{0.025} = 1.96$, the calculation yields:
+
+\[
+n \geq \left(\frac{2 \cdot 1.96 \cdot 0.1}{0.05}\right)^2 = 61.4,
+\]
+
+indicating a requirement of at least 62 measurements to meet the width criterion.
+
+If $\sigma$ is unknown, an estimate must be used to approximate the required sample size, recognizing that the actual standard deviation determined post-data collection might differ, influencing the ultimate confidence interval size.
+
+\section{Hypothesis Tests}
+
+Hypothesis tests evaluate whether the observed data deviate significantly from what is expected under specific assumptions, forming a critical aspect of statistical inference. They are integral to understanding if differences in data (such as changes in biological measures) are due to chance or actual effects.
+
+Consider an example from a biological study where we assess the impact of a new feed on the hormone levels of cattle. We observe changes in hormone levels before and after administering the feed to nine cows. The data exhibits variations, with most cows showing an increase in hormone levels, hinting at the feed's potential effect.
+
+In hypothesis testing, we initially establish a null hypothesis ($H_0$), which in our case is that the feed has no effect on hormone levels, hence $\mu = 0$, where $\mu$ is the mean difference in hormone concentrations. To assess this, we compute the mean ($\bar{d}$) of the observed differences in hormone levels. For the cattle study, $\bar{d} = 13.78\, \mu \mathrm{g/ml}$.
+
+To determine if this mean difference is statistically significant, we calculate a confidence interval. For our example, the 95\% confidence interval for the mean difference does not include zero (2.06, 25.49), suggesting that the null hypothesis might be false and the feed does indeed have an effect.
+
+Further analysis involves a t-test, where the test statistic $T_{\text{obs}}$ is calculated as:
+
+\[
+T_{\text{obs}} = \frac{\bar{d} - \mu}{\text{SE}(\bar{d})} = \frac{\bar{d} - 0}{\text{SE}(\bar{d})} = \frac{13.78}{5.08} = 2.71,
+\]
+
+where SE($\bar{d}$) is the standard error of the mean difference. The t-test compares $T_{\text{obs}}$ against a t-distribution with $n-1$ degrees of freedom (here, 8). The resulting p-value, the probability of observing a test statistic as extreme as $T_{\text{obs}}$ under $H_0$, is 0.026. Since this p-value is below the conventional alpha level of 0.05, we reject $H_0$, indicating the feed likely affects hormone levels.
+
+However, a hypothesis test's outcome is never absolute. Rejecting $H_0$ doesn't confirm the alternative hypothesis unequivocally; it merely indicates that under the null hypothesis, the observed data are unlikely. The test's significance level, typically set at 5\%, is the threshold for deciding whether the observed data are sufficiently improbable under $H_0$ to warrant this rejection. Importantly, decisions in hypothesis testing are susceptible to errors: Type I errors (false positives) occur if we reject a true $H_0$, while Type II errors (false negatives) occur if we fail to reject a false $H_0$.
+
+In sum, hypothesis testing in research, such as in the cattle feed study, involves setting up a null hypothesis, determining the appropriate test statistic, and calculating a p-value to decide whether the observed data significantly contradict $H_0$. Through this systematic approach, scientists can assess the likelihood of observed effects arising by chance, thus informing more confident conclusions about biological phenomena.
+
+\subsection{Null Hypotheses}
+
+In scientific research, data collection aims to answer questions like "Does the treatment work?" or "Is there a relationship between variables such as age and blood substance concentration?" This leads to the formulation of statistical hypotheses, which are simplifying assumptions about our statistical model.
+
+For example, consider the linear model:
+
+\[
+y_{i} = \mu_{i} + e_{i}, \quad i = 1, \ldots, n,
+\]
+
+where $\mu_{i}$ are means influenced by parameters and variables, and $e_{i}$ are independent, normally distributed error terms with mean 0 and variance $\sigma^{2}$. A null hypothesis ($H_0$) simplifies the statistical model by making specific assertions about these parameters.
+
+A single sample hypothesis might propose a specific mean value $\mu_0$, asserting that all $y_i$ are drawn from $N(\mu_0, \sigma^2)$. In linear regression, such as $y_i = \alpha + \beta \cdot x_i + e_i$, the hypothesis $H_0: \beta = 0$ suggests no linear relationship between $x$ and $y$, leading to all $y_i$ having the distribution $N(\alpha, \sigma^2)$ under $H_0$.
+
+In one-way ANOVA, where observations are from different groups, the null hypothesis can assert no difference among group means, $H_0: \alpha_1 = \alpha_2 = \cdots = \alpha_k$. If true, all observations are from $N(\alpha, \sigma^2)$ distributions, with $\alpha$ being the shared group mean.
+
+These examples demonstrate how hypotheses are deeply integrated with the underlying statistical models, reinforcing the necessity of selecting appropriate models for data analysis. The null model, or model under $H_0$, imposes additional constraints to simplify the original model.
+
+Each null hypothesis has an alternative hypothesis ($H_A$), which represents what is true if $H_0$ is false. Often, $H_A$ is simply the logical opposite of $H_0$, such as $H_A: \beta \neq 0$ for linear regression. However, directional alternatives like $H_A: \beta > 0$ or $H_A: \beta < 0$ can also be appropriate depending on the research question. It is crucial to establish $H_A$ before data analysis to avoid biases.
+
+The null hypothesis typically corresponds to "no effect" or "no association", which can be precisely defined in the model. A statistical test then examines if the observed data contradict $H_0$. Rejecting $H_0$ suggests believing in $H_A$, which claims an effect exists. However, failing to reject $H_0$ only indicates the data does not provide sufficient evidence against it, not that $H_0$ is definitely true.
+
+Consider a study on stearic acid's effect on fat digestibility in animals. Here, the null hypothesis $H_0: \beta = 0$ would assert no relationship between stearic acid and digestibility, tested against $H_A: \beta \neq 0$. If evidence suggests digestibility is 75\% for a 20\% stearic acid level, we might test $H_0: \alpha + \beta \cdot 20 = 75$ against $H_A: \alpha + \beta \cdot 20 \neq 75$.
+
+Similarly, in a study investigating the association between the length of gestation and lifespan in horses, the hypothesis $H_0: \beta = 0$ indicates no relationship, with a possible one-sided alternative $H_A: \beta > 0$ if it's hypothesized that longer gestation leads to longer life.
+
+Finally, in studies like antibiotic effects on dung decomposition, $H_0$ might state no difference between treatment averages, against the alternative that at least two treatments differ. Importantly, the choice of hypothesis significantly affects the interpretation of data and results, underscoring the need for careful hypothesis formulation in scientific research.
+
+\subsection{$t$-tests}
+
+We explore hypothesis testing within a linear model:
+
+\[
+y_{i} = \mu_{i} + e_{i}, \quad i = 1, \ldots, n,
+\]
+
+where $\mu_{i}$ are modeled through parameters $\theta_{1}, \ldots, \theta_{p}$ and explanatory variables, and $e_{i}$ are independent and identically distributed following a normal distribution $N(0, \sigma^2)$. We focus on testing hypotheses about a specific parameter $\theta_j$ in the model, formulated as:
+
+\[
+H_0: \theta_{j} = \theta_{0},
+\]
+
+for some fixed value $\theta_0$. This form of hypothesis testing can be applied broadly, including cases where $\theta_j$ represents a linear combination of other parameters.
+
+Data supporting $H_0$ yield estimates $\hat{\theta}_j$ close to $\theta_0$. Conversely, large deviations suggest contradictions. We employ a t-test, leveraging the statistic:
+
+\[
+T_{\text{obs}} = \frac{\hat{\theta}_{j} - \theta_{0}}{\text{SE}(\hat{\theta}_{j})},
+\]
+
+which follows a t-distribution with $n-p$ degrees of freedom under $H_0$. The extremeness of $T_{\text{obs}}$ informs us about the alignment between our data and $H_0$.
+
+The p-value, depending on the nature of the alternative hypothesis ($H_A$), guides us in determining the statistical significance of the observed deviations:
+
+- For a two-sided alternative ($H_A: \theta_{j} \neq \theta_{0}$), both large positive and negative values of $T_{\text{obs}}$ are critical:
+
+  \[
+  p\text{-value} = P(|T| \geq |T_{\text{obs}}|) = 2 \cdot P(T \geq |T_{\text{obs}}|),
+  \]
+
+- For a one-sided alternative ($H_A: \theta_{j} > \theta_{0}$), large values of $T_{\text{obs}}$ are critical, leading to:
+
+  \[
+  p\text{-value} = P(T \geq T_{\text{obs}}).
+  \]
+
+- Similarly, for $H_A: \theta_{j} < \theta_{0}$, only small values of $T_{\text{obs}}$ matter:
+
+  \[
+  p\text{-value} = P(T \leq T_{\text{obs}}).
+  \]
+
+A hypothesis is rejected if the p-value is less than the chosen significance level $\alpha$ (typically 0.05, 0.01, or 0.10).
+
+For two-sided hypotheses, $H_0$ is rejected at the 5\% significance level if $|T_{\text{obs}}|$ exceeds the 97.5th percentile of the $t_{n-p}$ distribution. For one-sided tests, the critical region changes accordingly.
+
+Furthermore, a connection exists between t-tests and confidence intervals: $H_0$ is rejected if the hypothesized value $\theta_0$ does not fall within the constructed confidence interval for $\theta_j$. This relationship underscores how both t-tests and confidence intervals provide complementary information about parameter estimates within linear models.
+
+Practical examples, like evaluating mean differences between groups or the association between variables in regression contexts, demonstrate the application of these principles, aiding in decisions about hypotheses concerning biological, industrial, or environmental processes. By comparing observed test statistics against theoretical distributions, researchers can infer whether the observed data contradict their hypotheses about the population parameters, guiding scientific and decision-making processes.
+
+\subsection{Tests in a One-Way ANOVA}
+
+The one-way ANOVA method is applied to determine if there are statistically significant differences among several group means. This is particularly crucial when dealing with more than two groups, making the simple $t$-test inadequate.
+
+\subsubsection{The F-test for Comparison of Groups}
+
+In the context of one-way ANOVA, observations are modeled as:
+
+\[
+y_{i} = \alpha_{g(i)} + e_{i}, \quad i = 1, \ldots, n,
+\]
+
+where $g(i)$ identifies the group belonging of the $i$-th observation, and $e_i$ are independently and normally distributed with mean 0 and variance $\sigma^2$. The hypothesis aims to assess the equality of group means, formulated as:
+
+\[
+H_0: \alpha_{1} = \alpha_{2} = \cdots = \alpha_{k},
+\]
+
+with the alternative hypothesis suggesting at least one pair of group means is different.
+
+In analyzing group differences, we segregate total variation into within-group variation ($\text{SS}_{e}$) and between-group variation ($\text{SS}_{\text{grp}}$). The within-group or residual sum of squares is:
+
+\[
+\text{SS}_{e} = \sum_{i=1}^{n} (y_i - \bar{y}_{g(i)})^2,
+\]
+
+capturing the variability of observations within each group. Here, $\bar{y}_{g(i)}$ is the mean of the group to which observation $i$ belongs. The corresponding mean square error is calculated by dividing $\text{SS}_{e}$ by the residual degrees of freedom ($n - k$):
+
+\[
+\text{MS}_{e} = \frac{\text{SS}_{e}}{n - k}.
+\]
+
+For between-group variation, which reflects differences among group means, we use:
+
+\[
+\text{SS}_{\text{grp}} = \sum_{j=1}^{k} n_j (\bar{y}_j - \bar{y})^2,
+\]
+
+where $n_j$ is the number of observations in the $j$-th group, $\bar{y}_j$ is the mean of the $j$-th group, and $\bar{y}$ is the overall mean of all observations. This sum of squares is divided by the degrees of freedom for group ($k - 1$) to obtain:
+
+\[
+\text{MS}_{\text{grp}} = \frac{\text{SS}_{\text{grp}}}{k - 1}.
+\]
+
+The F-test evaluates the ratio of these mean squares:
+
+\[
+F_{\text{obs}} = \frac{\text{MS}_{\text{grp}}}{\text{MS}_{e}}.
+\]
+
+Large values of $F_{\text{obs}}$ suggest significant differences among group means, challenging the null hypothesis of equal means.
+
+For practical application, consider an analysis to test if different antibiotics lead to varying rates of dung decomposition. The computation involves determining $\text{SS}_{e}$, $\text{SS}_{\text{grp}}$, and subsequently $\text{MS}_{e}$ and $\text{MS}_{\text{grp}}$. These calculations help to construct the $F_{\text{obs}}$ statistic, which is then compared against the critical value from the F distribution with $(k - 1, n - k)$ degrees of freedom. A statistically significant $F_{\text{obs}}$ (typically when the p-value is less than 0.05) leads to the rejection of the null hypothesis, implying that the antibiotic types have different effects on dung decomposition rates.
+
+Hence, the F-test in one-way ANOVA offers a systematic approach to determine if there are significant differences among the means of multiple groups, guiding researchers in understanding the impact of different treatments or conditions.
+
+\subsubsection{Pairwise Comparisons and LSD-values}
+
+In cases where the interest is in specific group comparisons within an ANOVA framework, pairwise comparisons are often conducted. While these analyses may focus on just two groups at a time, they leverage the full dataset to enhance the precision of the standard deviation estimate, effectively "borrowing information" from all groups.
+
+The hypothesis for comparing two specific groups, $j$ and $l$, is expressed as:
+
+\[
+H_{0}: \alpha_{j} = \alpha_{l} \quad \text{or equivalently} \quad H_{0}: \alpha_{j} - \alpha_{l} = 0,
+\]
+
+with the two-sided alternative $H_{A}: \alpha_{j} - \alpha_{l} \neq 0$. The comparison employs a t-test given by:
+
+\[
+T_{\text{obs}} = \frac{\hat{\alpha}_{j} - \hat{\alpha}_{l}}{\mathrm{SE}(\hat{\alpha}_{j} - \hat{\alpha}_{l})} = \frac{\hat{\alpha}_{j} - \hat{\alpha}_{l}}{s \sqrt{\left(\frac{1}{n_{j}} + \frac{1}{n_{l}}\right)}},
+\]
+
+where $\hat{\alpha}_{j}$ and $\hat{\alpha}_{l}$ are the sample means of the two groups, $s$ is the pooled standard deviation, and $n_j$ and $n_l$ are the sample sizes of the two groups. This test statistic follows the $t_{n-k}$ distribution.
+
+The significant difference is declared if the absolute observed value $|T_{\text{obs}}|$ exceeds the critical value $t_{0.975, n-k}$, correlating to the 95\% confidence level. Mathematically, this condition is:
+
+\[
+|\hat{\alpha}_{j} - \hat{\alpha}_{l}| \geq t_{0.975, n-k} \cdot s \sqrt{\left(\frac{1}{n_{j}} + \frac{1}{n_{l}}\right)}.
+\]
+
+The threshold on the right is known as the least significant difference (LSD), specifically, the 95\% LSD-value for the difference between $\alpha_j$ and $\alpha_l$. When all groups have the same number of observations, denoted $n'$, the LSD simplifies to:
+
+\[
+\text{LSD}_{0.95} = t_{0.975, n-k} \cdot s \sqrt{\frac{2}{n'}}.
+\]
+
+This uniform LSD-value allows for straightforward comparisons between any two group means.
+
+Consider an example where the effects of different antibiotics on dung decomposition are examined. With means computed for each antibiotic group and the pooled standard deviation established, pairwise comparisons can be systematically conducted. For instance, if the LSD-value calculated is 0.144 for groups with six observations each, and the observed mean difference between any two specific groups exceeds this value, the groups are considered significantly different at the 95\% confidence level.
+
+However, when conducting multiple pairwise comparisons, one must be cautious due to the risk of the multiple testing problem, which can inflate the overall type I error rate.
+
+In practice, the analysis might reveal significant differences among specific antibiotic types regarding their effect on dung decomposition. This can lead to actionable insights in agricultural or pharmaceutical contexts. Yet, researchers must apply these analyses judiciously, acknowledging the potential for increased false positive rates due to multiple comparisons and employing techniques such as the LSD-value cautiously to mitigate these risks.
+
+\subsection{Hypothesis Tests as Comparison of Nested Models}
+
+Hypothesis testing can be viewed as a comparison between nested models. In the one-way ANOVA context, this perspective involves evaluating the fit between a full model, which allows group means to differ, and a null model, which assumes all group means are equal.
+
+The $F$-statistic, used to compare group effects, is derived as:
+
+\[
+F_{\mathrm{obs}} = \frac{\text{MS}_{\text{grp}}}{\text{MS}_{e}} = \frac{\text{SS}_{\text{grp}} / (k - 1)}{\text{SS}_{e} / (n - k)}.
+\]
+
+This ratio reflects the relative magnitude of between-group variation to within-group variation, effectively comparing model fits under varying hypotheses. A low $F_{\mathrm{obs}}$ value suggests the null model (equal means) is adequate, while a high value indicates the full model provides a significantly better fit, thus rejecting the null hypothesis.
+
+The residual sum of squares under the null hypothesis ($\text{SS}_{\text{total}}$) always exceeds or equals that under the full model ($\text{SS}_{e}$). The difference, $\text{SS}_{\text{total}} - \text{SS}_{e}$, quantifies the improvement in fit provided by allowing group means to differ. Large values of this difference suggest significant between-group variability, leading to rejection of the null hypothesis. When standardized by the respective degrees of freedom, this difference yields the $F$-statistic:
+
+\[
+F_{\mathrm{obs}} = \frac{(\text{SS}_{\text{total}} - \text{SS}_{e}) / (k - 1)}{\text{SS}_{e} / (n - k)}.
+\]
+
+In general linear models, we extend this logic by comparing a full model (without hypothesis-imposed restrictions) against a null model (with restrictions). This involves calculating the residual sum of squares for both models ($\text{SS}_{\text{full}}$ and $\text{SS}_{0}$) and their respective degrees of freedom ($\text{df}_{\text{full}}$ and $\text{df}_{0}$). The $F$-statistic is then:
+
+\[
+F_{\mathrm{obs}} = \frac{(\text{SS}_{0} - \text{SS}_{\text{full}}) / (\text{df}_{0} - \text{df}_{\text{full}})}{\text{SS}_{\text{full}} / \text{df}_{\text{full}}}.
+\]
+
+This statistic follows an $F$-distribution under the null hypothesis, allowing calculation of a p-value for hypothesis testing. The degrees of freedom reflect the additional parameters estimated in the full model compared to the null model. The $F_{\mathrm{obs}}$ value is considered large if it results in a small p-value, indicating the full model provides a significantly better explanation of the data compared to the null model.
+
+As demonstrated with stearic acid's effect on fat digestibility, testing hypotheses about single parameters can be conducted using either $t$-tests or $F$-tests. In these tests, the $F$-statistic equates to the square of the $t$-statistic, thus providing identical p-values and conclusions. This connection highlights the consistency and versatility of linear model-based hypothesis testing, whether comparing group means in ANOVA or evaluating parameter significance in regression models.
+\subsection{Hypothesis Tests as Comparison of Nested Models}
+
+Hypothesis testing, particularly using the $F$-statistic in a one-way ANOVA, compares between-group and within-group variations to evaluate model fits. The $F$-statistic, defined as
+
+\begin{equation*}
+F_{\mathrm{obs}} = \frac{\mathrm{MS}_{\mathrm{grp}}}{\mathrm{MS}_{e}} = \frac{\mathrm{SS}_{\mathrm{grp}} /(k-1)}{\mathrm{SS}_{e} /(n-k)},
+\end{equation*}
+
+facilitates comparing the residual sums of squares ($\mathrm{SS}_{e}$) under two models: the full model allowing different group means and the null model assuming a common mean across groups. The difference $\mathrm{SS}_{\text{total}} - \mathrm{SS}_{e}$, representing the improvement in model fit from the null model to the full model, when standardized by degrees of freedom, yields the $F_{\mathrm{obs}}$.
+
+This approach extends to all linear models, comparing a full model against a null model restricted by the hypothesis. The comparison is quantified by the $F$-test statistic
+
+\begin{equation*}
+F_{\mathrm{obs}} = \frac{(\mathrm{SS}_{0} - \mathrm{SS}_{\mathrm{full}}) /(\mathrm{df}_{0} - \mathrm{df}_{\mathrm{full}})}{\mathrm{SS}_{\mathrm{full}} / \mathrm{df}_{\mathrm{full}}},
+\end{equation*}
+
+where $\mathrm{SS}_{\text{full}} \leq \mathrm{SS}_{0}$ reflects the reduction in the residual sum of squares due to the hypothesis, adjusted for model flexibility and complexity through degrees of freedom.
+
+Example analyses illustrate that $F_{\text{obs}}$ for testing a hypothesis about a single parameter in linear regression models yields the same $p$-value as a $t$-test, demonstrating their equivalence. This alignment confirms that the $F$-test can effectively compare nested models, evaluating the impact of hypotheses on model fit.
+
+\subsection{Type I and Type II Errors}
+
+In hypothesis testing, Type I (false positive) and Type II (false negative) errors reflect incorrect rejections of true hypotheses and failures to reject false hypotheses, respectively. The significance level ($\alpha$) controls the probability of Type I errors, with a common choice being $0.05$. Adjusting $\alpha$ impacts the balance between Type I and Type II errors, highlighting a trade-off between detecting true effects and avoiding false alarms.
+
+Multiple testing increases the risk of Type I errors, demonstrated through the concept of Bonferroni correction in pairwise comparisons within ANOVA. This correction, by adjusting $p$-values for the number of tests, addresses the heightened risk of false positives but increases the chance of Type II errors, underscoring the complexity of drawing conclusions from multiple tests. Strategies to mitigate these risks include conducting overall group tests, prioritizing comparisons based on prior knowledge, and transparently reporting $p$-values.
+
+\subsection*{General Procedure for Hypothesis Tests}
+
+The general procedure for conducting hypothesis tests involves:
+
+\begin{enumerate}
+    \item Choosing a significance level ($\alpha$), typically $0.05$.
+    \item Defining the null and alternative hypotheses to address the scientific question.
+    \item Selecting an appropriate test statistic, determining critical values, and identifying the statistic's distribution under the null hypothesis.
+    \item Computing the $p$-value to decide on rejecting or not rejecting the hypothesis based on $\alpha$.
+    \item Translating the test's outcome to a conclusion relevant to the original question, including quantification of significant effects if applicable.
+\end{enumerate}
+
+This framework underscores the systematic approach required to effectively test hypotheses, encompassing selection of significance levels, hypothesis formulation, test statistic determination, $p$-value computation, and interpretation of results.
+
+\section{Prediction and Confidence Intervals}
+
+Confidence intervals are statistical ranges, typically based on sample data, which are likely to contain an unknown population parameter; conversely, prediction intervals provide a range within which we expect a new observation to fall. While confidence intervals are focused on the uncertainty of the mean predicted values, prediction intervals encompass the variability expected in future individual observations.
+
+\subsection{Formulation of Intervals}
+The prediction interval in the context of linear regression is formulated as:
+\[
+\hat{\alpha} + \hat{\beta} \cdot x_0 \pm t_{0.975, n-2} \cdot s \cdot \sqrt{1 + \frac{1}{n} + \frac{(x_0 - \bar{x})^2}{SS_x}},
+\]
+where $\hat{\alpha}$ and $\hat{\beta}$ are estimated coefficients from the regression, $x_0$ is the point at which the prediction is being made, $n$ is the sample size, $s$ is the standard deviation of errors, and $SS_x$ is the sum of squares of the explanatory variable. This interval combines the uncertainty in the estimate of the mean response (confidence interval) with the variability of individual observations around that mean.
+
+The confidence interval for the mean response at $x_0$ in linear regression is narrower and is given by:
+\[
+\hat{\alpha} + \hat{\beta} \cdot x_0 \pm t_{0.975, n-2} \cdot s \cdot \sqrt{\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{SS_x}}.
+\]
+It differs from the prediction interval by excluding the term $1$ inside the square root, reflecting that it addresses the uncertainty of the mean rather than individual observations.
+
+The essential difference between prediction and confidence intervals lies in their width: prediction intervals are inherently wider due to the additional variability of individual outcomes, while confidence intervals pertain strictly to the uncertainty of estimating the mean. Importantly, while increasing the sample size reduces the width of confidence intervals, prediction intervals retain a component of irreducible variability, reflected in their formula.
+
+\subsection{Practical Applications}
+Prediction intervals are essential in forecasting, allowing for an appreciation of the uncertainty surrounding individual predictions, such as in weather forecasting, stock price movements, or patient treatment responses. Confidence intervals, meanwhile, help understand the precision of sample-based estimates of population parameters.
+
+\section{Statistical Model Validation}
+
+Model validation in statistics ensures that the assumptions which underpin statistical models, particularly linear regression and ANOVA, are sound. This is critical as these assumptions impact the model's conclusions.
+
+\subsection{Linear Regression and ANOVA}
+Linear regression analyses the linear relationship between variables, encapsulated by the T-statistic formula:
+
+\[
+T = \frac{\hat{\beta} - \beta_0}{s/\sqrt{SS_x}}
+\]
+
+Here, $\hat{\beta}$ is the estimated regression coefficient, $\beta_0$ is the hypothesized value under the null hypothesis, $s$ denotes the standard error of the estimate, and $SS_x$ is the sum of squares attributable to the independent variable. This T-statistic follows a t-distribution with $n-2$ degrees of freedom, which is foundational for hypothesis testing in regression.
+
+For ANOVA, the significance of differences among group means is evaluated using an F-statistic ($F_{obs}$), which follows an F-distribution under the null hypothesis.
+
+\[
+F_{\text{obs}} = \frac{\text{MS}_{\text{between}}}{\text{MS}_{\text{within}}}
+\]
+
+where:
+\begin{itemize}
+    \item $\text{MS}_{\text{between}}$ (Mean Square Between Groups) is the variance estimate based on the group means and reflects between-group variability.
+    \item $\text{MS}_{\text{within}}$ (Mean Square Within Groups) is an estimate of the population variance based on the within-group variability.
+\end{itemize}
+
+In mathematical terms, these components are calculated as follows:
+
+\[
+\text{MS}_{\text{between}} = \frac{\sum_{i=1}^{k} n_i (\bar{y}_i - \bar{y})^2}{k - 1}
+\]
+
+\[
+\text{MS}_{\text{within}} = \frac{\sum_{i=1}^{k} \sum_{j=1}^{n_i} (y_{ij} - \bar{y}_i)^2}{N - k}
+\]
+
+Here, $n_i$ is the number of observations in group $i$, $\bar{y}_i$ is the mean of group $i$, $\bar{y}$ is the overall mean, $y_{ij}$ is the $j$th observation from the $i$th group, $k$ is the number of groups, and $N$ is the total number of observations.
+
+The resulting $F_{\text{obs}}$ statistic follows an F-distribution with $(k - 1)$ degrees of freedom for the numerator and $(N - k)$ degrees of freedom for the denominator under the null hypothesis. If the calculated F-value exceeds the critical value from the F-distribution for a given significance level (commonly 0.05), the null hypothesis of equal means is rejected, suggesting that there is a statistically significant difference among the group means.
+
+ANOVA assumptions include:
+\begin{itemize}
+    \item Independence of observations.
+    \item Normal distribution of residuals within each group.
+    \item Homogeneity of variances across groups (homoscedasticity).
+\end{itemize}
+
+\subsection{Linear Model Assumptions}
+Consider a linear model expressed as $y_i = \mu_i + e_i$. The error terms $e_i$ are assumed to satisfy the following conditions for all observations $i = 1, ... , n$:
+
+\begin{enumerate}
+    \item Expected value of zero: $E[e_i] = 0$.
+    \item Constant standard deviation (homoscedasticity): Var($e_i$) = $\sigma^2$.
+    \item Normal distribution: $e_i \sim N(0, \sigma^2)$.
+    \item Independence: Cov($e_i, e_j$) = 0 for $i \neq j$.
+\end{enumerate}
+
+Violating these assumptions can result in inaccurate statistical inferences.
+
+\subsection{Verifying Assumptions: Normality and Homoscedasticity}
+To validate model assumptions, we examine the residuals, $r_i = y_i - \hat{y}_i$, where $\hat{y}_i$ are the predicted values from the model. The normality assumption can be checked using Quantile-Quantile (Q-Q) plots, where deviations from a straight line indicate departure from normality. Homoscedasticity is assessed through plots of residuals against predicted values or independent variables; patterns such as funnels suggest heteroscedasticity.
+
+\subsection{Diagnostics for Residuals}
+Investigation of residuals' behavior is central to validating model assumptions. Specifically, residual plots should not exhibit discernible patterns that would indicate systemic errors in the model such as non-linear relationships, heteroscedasticity, or autocorrelation.
+
+\subsection{Methodology}
+The approach to performing a detailed statistical analysis encompasses:
+
+\subsubsection*{Step 1: Data Preparation and Exploration}
+Before any statistical analysis, it is crucial to understand the dataset's structure. This involves reviewing the data to identify any potential issues such as missing values, outliers, or incorrect data formats. Preparation typically involves:
+\begin{itemize}
+    \item Cleaning the data by addressing missing values and errors.
+    \item Summarizing the data with descriptive statistics to capture its central tendency, dispersion, and shape.
+    \item Visualizing the data with plots to understand its distribution and identify potential outliers.
+\end{itemize}
+
+\subsubsection*{Step 2: Summary Statistics and Distribution Analysis}
+After preparing the data, perform a thorough analysis by calculating summary statistics such as mean, median, and standard deviation. Additionally, assess the distribution of your data using histograms or density plots to check for normality, skewness, or kurtosis, which will inform the appropriateness of statistical tests or models.
+
+\subsubsection*{Step 3: Correlation Analysis}
+Identify and quantify potential linear relationships between variables using the Pearson correlation coefficient. Visual tools like scatter plots or heatmaps can help visualize these correlations and identify potential nonlinear relationships or clusters.
+
+\subsubsection*{Step 4: Regression Analysis}
+Apply regression analysis to model the relationship between an independent variable and a dependent variable. This includes:
+\begin{itemize}
+    \item Fitting a simple linear regression model to understand the linear relationship between variables.
+    \item Assessing the impact of outliers or influential points on the model using diagnostics such as leverage scores and Cook's distance.
+    \item Validating the model assumptions such as linearity, normality of residuals, and homoscedasticity through residual analysis.
+\end{itemize}
+
+\subsubsection*{Step 5: Model Evaluation and Validation}
+Evaluate the fit of the regression model using goodness-of-fit metrics like R-squared and adjusted R-squared. These metrics will help you understand how well your model explains the variability of the response data. Additionally, conduct a thorough residual analysis to ensure that there are no patterns indicating issues with the model fit, such as non-linearity or autocorrelation.
+
+\subsubsection*{Step 6: Outlier Analysis and Model Refinement}
+Identify and address outliers and influential data points. This step involves:
+\begin{itemize}
+    \item Conducting a sensitivity analysis to understand how the removal or adjustment of these points affects the model.
+    \item Deciding whether to exclude outliers based on statistical criteria and domain knowledge.
+    \item Refining the model and reevaluating its performance after adjustments.
+\end{itemize}
+
+\subsubsection*{Step 7: Further Analysis}
+If necessary, extend your analysis to accommodate more complex relationships:
+\begin{itemize}
+    \item Use multiple regression if there are additional relevant variables.
+    \item Explore polynomial regression or transformation of variables if preliminary analysis suggests a nonlinear relationship.
+\end{itemize}
+
+\subsubsection*{Step 8: Interpretation and Reporting}
+Finally, interpret the results of your statistical analysis within the context of your study. This includes:
+\begin{itemize}
+    \item Explaining the meaning and practical significance of regression coefficients.
+    \item Discussing any limitations of your analysis and the implications of the assumptions made during the process.
+    \item Presenting your findings in a clear, understandable manner, supported by visualizations and summary statistics.
+\end{itemize}
+This process is iterative, allowing for refinement and deeper insights at each step based on the outcomes of the preceding steps, leading to a robust and insightful statistical analysis.
+
+\section{Linear normal models}
+
+Experiments often include multiple variables affecting the response, requiring their inclusion in the statistical model. Previously, models like linear regression and one-way analysis of variance have addressed single explanatory variables—quantitative and categorical, respectively. Both models are types of linear models, assuming normally distributed residuals. This section expands on these models and introduces a general framework for linear models.
+
+\subsection{Multiple linear regression}
+
+Multiple linear regression generalizes simple linear regression to include multiple continuous explanatory variables, modeling the relationship as:
+\[
+y_i = \alpha + \beta_1 x_{i1} + \cdots + \beta_d x_{id} + e_i, \quad i = 1, \ldots, n
+\]
+with $e_i \sim N(0, \sigma^2)$, representing the residuals. The $\beta_j$ parameters quantify the impact of each variable, assuming other variables are constant.
+
+The estimates for $\alpha, \beta_1, \ldots, \beta_d$ are obtained using least squares. This model can accommodate hypotheses testing for individual parameters, typically testing if they are zero:
+\[
+T_{\text{obs}} = \frac{\hat{\beta}_j - 0}{\operatorname{SE}(\hat{\beta}_j)},
+\]
+following a t-distribution with $n-d-1$ degrees of freedom. Calculations involving these parameters often require software due to the complexity of matrix operations involved.
+
+As an example, data collected from 31 cherry trees includes tree diameter and height, modeled to predict tree volume without harvesting:
+\[
+v_i = \alpha + \beta_1 h_i + \beta_2 d_i + e_i, \quad i = 1, \ldots, 31
+\]
+with $e_i \sim N(0, \sigma^2)$. An exploratory analysis reveals potential heterogeneity in residuals, suggesting transformations or different models might be necessary.
+
+
+
+\textbf{Statistical inference}: Hypotheses such as $H_0: \beta_j = 0$ test the contribution of variables. Multicollinearity among variables can affect the reliability of parameter estimates, a common challenge in multiple regression.
+
+\textbf{Extension to other models}: Including polynomial terms allows for modeling non-linear relationships, such as quadratic regression:
+\[
+y_i = \alpha + \beta_1 x_i + \beta_2 x_i^2 + e_i, \quad i = 1, \ldots, n.
+\]
+This model can test for curvature in the data relationship, improving fit over a simple linear model.
+
+
+\subsection{Additive two-way analysis of variance}
+Previously, we expanded the one-way ANOVA to include multiple explanatory variables in a manner analogous to extending simple linear regression. Here, we focus on the two-way ANOVA, applicable to cases with two categorical explanatory variables, which are a subset of the general multi-way ANOVA framework.
+
+For the two-way ANOVA, observation $i$ is modeled as:
+\begin{equation*}
+y_{i}=\alpha_{g(i)}+\beta_{h(i)}+e_{i}, \quad i=1, \ldots, n
+\end{equation*}
+where $e_i \sim N(0, \sigma^2)$ are independent residuals, and $g(i)$ and $h(i)$ map $i$ to the levels of two categorical variables.
+
+Parameter estimation employs least squares, deriving variance from:
+\begin{equation*}
+s^{2} =\frac{\mathrm{SS}_{e}}{\mathrm{df}_{e}}=\frac{1}{n-\left(k_{1}+k_{2}-1\right)} \sum_{i}\left(y_{i}-\hat{y}_{i}\right)^{2}
+\end{equation*}
+This formula incorporates the effective number of parameters, $k_{1}+k_{2}-1$, due to one redundant parameter among $k_{1}+k_{2}$. This parameter count arises because one cell serves as a reference, leaving $k_{1}-1$ and $k_{2}-1$ contrast parameters for the two variables, respectively.
+
+Furthermore, in the two-way ANOVA, each observation fits precisely into a cell defined by the intersections of categories from each variable, simplifying the prediction of responses at each category combination.
+
+Testing for differences among categories (e.g., no variation across categories of a variable) follows the logic of one-way ANOVA but includes both variables in the model. The mean squared deviations for each explanatory variable against the residual mean square lead to $F$-statistics compared to appropriate $F$-distributions.
+
+\subsubsection{The additive multi-way analysis of variance}
+Consider a scenario with $d$ categorical variables $x_{1}, \ldots, x_{d}$ influencing an observed response $y$ in a dataset. Each categorical variable $x_j$ may have a different number of categories $k_j$. The model for the multi-way analysis of variance is expressed as:
+
+\begin{equation*}
+y_{i} = \alpha_{g(i)} + \beta_{h(i)} + \cdots + \gamma_{l(i)} + e_{i}, \quad i = 1, \ldots, n
+\end{equation*}
+
+where $e_i \sim N(0, \sigma^2)$ represents the residuals assumed to be independent and normally distributed. Functions $g, \ldots, l$ map each observation to a specific combination of category levels. The statistical methodologies, including estimation, hypothesis testing, and contrast analysis used in the two-way analysis can be seamlessly extended to this more general framework.
+
+
+\subsubsection{Analysis of variance as linear regression}
+The general analysis of variance model described as
+\begin{equation*}
+y_{i}=\alpha_{g(i)}+\beta_{h(i)}+\cdots+\gamma_{l(i)}+e_{i}, \quad i=1, \ldots, n
+\end{equation*}
+can be expressed using dummy variables for its categorical explanatory variables. Each variable, such as one with $k_1$ categories, is represented by $k_1$ dummy variables $x_{i1}^1, \ldots, x_{ik_1}^1$, defined as:
+\[
+x_{ij}^1= 
+\begin{cases}
+1 & \text{if observation } i \text{ belongs to category } j\\
+0 & \text{otherwise}
+\end{cases}
+\]
+This allows the model to be rewritten in a linear regression format:
+\begin{equation*}
+y_{i} = \alpha_1 x_{i1}^1 + \alpha_2 x_{i2}^1 + \cdots + \alpha_{k_1} x_{ik_1}^1 + \beta_1 x_{i1}^2 + \cdots + \gamma_{k_d} x_{ik_d}^d + e_{i}
+\end{equation*}
+Here, $x$'s are indicator variables representing categorical levels in $d$ variables, each with $k_1, k_2, \ldots, k_d$ categories respectively.
+
+An example with a pork quality dataset utilizes two variables, pig and day, with 10 and 3 categories respectively. Dummy variables $x_{ij}^{\text{pig}}$ and $x_{ij}^{\text{day}}$ define membership in pig and day categories. For instance, $x_{ij}^{\text{pig}} = 1$ if observation $i$ is from pig $j$, and $x_{ij}^{\text{day}} = 1$ if observation $i$ is from day $j$, otherwise 0.
+
+The model for pork quality is then:
+\begin{align*}
+y_{i} & = \alpha_1 x_{i1}^{\text{pig}} + \cdots + \alpha_{10} x_{i10}^{\text{pig}} + \beta_1 x_{i1}^{\text{day}} + \beta_4 x_{i4}^{\text{day}} + \beta_6 x_{i6}^{\text{day}} + e_{i} 
+\end{align*}
+
+This representation shows that ANOVA models can be understood as linear regression models by reformulating categorical variables into dummy variables. The term linear model arises because the parameters ($\alpha, \beta, \gamma$) relate linearly to the response variable, even though the predictors are categorical. The generalization of this approach allows for complex models that integrate both continuous and categorical data, structured as linear combinations of parameters and functions of predictor variables.
+
+\subsection{Linear models}
+Linear models represent observations $y_i$ as combinations of predictor variables and an error term, formalized as:
+\begin{equation*}
+y_{i}=\sum_{j=1}^{d} \beta_{j} \cdot x_{i j}+e_{i}, \quad i=1, \ldots, n
+\end{equation*}
+where $e_i \sim N(0, \sigma^2)$ are iid error terms. This structure resembles regression models, but it also integrates categorical variables by using dummy variables as demonstrated earlier, allowing for a blend of categorical and quantitative variables.
+
+For models with numerous explanatory variables, including those with many categories, simplifications include representing continuous variables by their regression coefficients $\beta_j \cdot x_{ij}$ and categorical variables by parameters such as $\alpha_{g(i)}$ and $\gamma_{h(i)}$ that denote category-specific intercepts. Thus, a model combining both types of variables could be expressed as:
+\begin{equation*}
+y_{i} = \alpha_{g(i)} + \gamma_{h(i)} + \beta_1 \cdot x_{i1} + \beta_2 \cdot x_{i2} + e_i 
+\end{equation*}
+This form separates the effects of categorical groupings and continuous predictors more clearly and is easier to interpret than a single summation of predictors and parameters.
+
+Moreover, statistical model formulas offer a simplified standard for expressing models, improving clarity and interpretability, particularly when dealing with models that incorporate a mix of variable types. These formulas enable researchers to succinctly describe complex interactions between predictors within a coherent framework of linear assumptions.
+
+\subsubsection{Model formulas}
+Model formulas provide a streamlined approach to express relationships in statistical models, particularly when integrating multiple explanatory variables. Their utility becomes evident with complex models. For instance, the relationship between tree volume and its dimensions was modeled as:
+\[
+\verb|volume = diameter + height|
+\]
+while pork color influenced by storage conditions was represented by:
+\[
+\verb|colour score = day + pig|
+\]
+
+In these formulas, the left-hand side specifies the response variable, with explanatory variables on the right-hand side. This format, however, does not distinguish between the nature of variables (categorical vs. continuous) or the number of parameters each variable contributes; such details must be inferred from the context or additional information.
+
+Continuous variables typically contribute a single parameter each, reflecting their direct linear effect on the response. In contrast, categorical variables like "day" and "pig" introduce multiple parameters (three for day, ten for pig), corresponding to the number of categories minus one, each representing a deviation from a reference category.
+
+Model formulas simplify the representation of the relationships being modeled, enhancing interpretability. A fundamental aspect of model formulas is the implicit inclusion of an intercept, which represents the grand mean across the data. In models involving categorical variables, the intercept serves as the reference level. If a model needs to exclude the intercept, indicating a scenario where the regression line should pass through the origin, it must be explicitly stated by appending "-1" to the model formula:
+\[
+\verb|volume = diameter + height -1|
+\]
+This notation explicitly eliminates the intercept, fitting the model directly through the origin, adjusting the interpretation and application of the regression parameters accordingly.
+
+\subsubsection{Estimation and parameterization}
+Mean parameters in linear models are estimated using least squares, a method applicable to models with multiple categorical variables, despite potential overparameterization issues. Overparameterization occurs when the number of parameters exceeds the capacity for estimation based on available data.
+
+We revisit the parameterization of one-way ANOVA models to illustrate approaches to handling multiple group comparisons. Specifically, parameterization can either directly represent each group's mean or utilize a reference group mean along with differences from this mean for other groups. This dual approach allows flexible model adjustment by adding or subtracting parameters as needed.\footnote{Different software parameterize models variably, affecting intercept interpretation. R and SAS typically use a reference level for categorical variables, parameterizing other categories as contrasts relative to this level.}
+
+Consider a two-variable categorical model:
+\begin{equation*}
+y_{i}=\alpha_{g(i)}+\beta_{h(i)}+e_{i}, \quad i=1, \ldots, n
+\end{equation*}
+An example might be an animal feeding experiment testing different supplements. If $\mu$ represents the average weight for a reference feeding strategy, and $\alpha$ and $\beta$ represent the average weight changes due to two different substances, the group means under various combinations of these substances are:
+\begin{center}
+\begin{tabular}{lcc}
+\hline\hline
+ & \multicolumn{2}{c}{Substance 1} \\
+\cline { 2 - 3 }
+Substance 2 & Not added & Added \\
+\hline
+Not added & $\mu$ & $\mu+\alpha$ \\
+Added & $\mu+\beta$ & $\mu+\alpha+\beta$ \\
+\hline
+\end{tabular}
+\end{center}
+This design assumes independent substance effects, an assumption explored further in subsequent sections.
+
+Statistical software handles overparameterization by defaulting one categorical level as the reference and treating others as contrasts, simplifying interpretation and analysis. It is critical, however, to accurately interpret these parameters: quantitative variable estimates represent partial regression slopes; categorical variable estimates indicate contrasts.
+
+The residual variance is estimated as usual:
+\begin{equation*}
+s^{2}=\frac{\mathrm{SS}_{e}}{\mathrm{df}_{e}}=\frac{1}{n-p} \sum_{i}\left(y_{i}-\hat{y}_{i}\right)^{2}
+\end{equation*}
+where $p$ is the number of parameters actively estimated. Most statistical packages automatically compute $p$, accommodating complex model structures effectively.
+
+\subsubsection{Hypothesis testing in linear models}
+In linear models, hypothesis testing follows the methods previously described. Single parameter hypotheses, such as 
+\[
+H_{0}: \beta_{j}=0,
+\]
+are tested using a $t$-test with the statistic 
+\[
+T_{\text{obs}} = \frac{\hat{\beta}_{j}}{\operatorname{SE}(\hat{\beta}_{j})}
+\]
+compared to a $t$ distribution with $n-p$ degrees of freedom. For compound hypotheses involving multiple parameters, such as 
+\[
+H_{1}: \beta_{A} = \cdots = \beta_{D},
+\]
+an $F$-test is employed. This test compares a reduced model under $H_{1}$ to the full model using the statistic
+\[
+F_{\mathrm{obs}} = \frac{(\mathrm{SS}_{0} - \mathrm{SS}_{\text{full}}) / (\mathrm{df}_{0} - \mathrm{df}_{\mathrm{full}})}{\mathrm{SS}_{\text{full}} / \mathrm{df}_{\text{full}}}
+\]
+where $\mathrm{SS}_{0}$ and $\mathrm{SS}_{\text{full}}$ are the sums of squares from the reduced and full models, respectively.\footnote{The effective number of parameters is determined by the rank of the design matrix $\boldsymbol{X}$ in the matrix form of the model $\boldsymbol{Y} = \boldsymbol{X} \boldsymbol{\beta} + \boldsymbol{e}$.}
+
+Models with multiple explanatory variables, like the two-way additive model 
+\[
+y = A + B,
+\]
+permit the testing of hypotheses such as 
+\[
+H_{0}: \alpha_{1} = \cdots = \alpha_{k_{1}}
+\]
+or 
+\[
+H_{1}: \beta_{1} = \cdots = \beta_{k_{2}}.
+\]
+If $H_{0}$ is not rejected, the model reduces to 
+\[
+y = B,
+\]
+removing the insignificant terms associated with $A$. Similarly, rejecting $H_{1}$ simplifies the model to 
+\[
+y = A.
+\]
+Each hypothesis test necessitates refitting the model to ensure the estimates are based on the correct model structure.
+
+For example, reducing the model from $y = A + B$ to $y = B$ requires recalculating the residual standard error with $n - k_{1}$ degrees of freedom rather than $n - k_{1} - k_{2} + 1$. This recalibration is crucial as it provides a more accurate estimate based on fewer parameters.
+
+\paragraph{Model reduction steps}
+\begin{itemize}
+  \item Refitting the model after removing explanatory variables is essential for accurate parameter estimation and conclusions.
+  \item Sequentially removing variables and refitting ensures that each model reduction is properly evaluated.
+  \item The process starts with a full model and systematically simplifies to focus on significant variables.
+\end{itemize}
+
+This structured approach to model reduction and hypothesis testing ensures that the conclusions drawn from statistical analysis are robust and supported by the data.
+
+\subsection{Interactions between variables}
+Additive models in analysis of variance assume that contrasts between levels of one variable do not vary with the levels of other variables. However, there are situations where it is plausible that the effect of one variable may be influenced by another variable, necessitating consideration of interaction terms.
+
+In one-way ANOVA, accurate estimation of within-group variation requires multiple observations per level. Similarly, for models incorporating interactions, it is essential to have at least two observations per level of the interaction term to estimate the interaction effects accurately. Without sufficient data per interaction level, only an additive model can be appropriately fitted, limiting the ability to discern whether interactions between variables significantly influence the response.
+
+\subsubsection{Interactions between categorical variables}
+In modeling situations where the effect of one variable may depend on another, such as blood pressure differences by gender across various ages, an interaction term is crucial. The simple additive model,
+
+\[
+\verb|blood pressure = gender + age|,
+\]
+
+assumes uniform differences across age groups, which might not be realistic. Incorporating an interaction term allows for varying effects across groups, making the model more flexible and representative of the underlying dynamics.
+
+\begin{equation*}
+y_{i} = \alpha_{g(i)} + \beta_{h(i)} + \gamma_{g(i), h(i)} + e_{i}, \quad i = 1, \ldots, n 
+\end{equation*}
+This model introduces $\gamma_{g(i), h(i)}$, representing the interaction between levels $g(i)$ of gender and $h(i)$ of age, with $k_{1} \times k_{2}$ interaction parameters possible.
+
+For the example of gender (2 categories) and age (4 categories), the model integrates 8 specific interaction terms, reflecting each gender-age combination. The inclusion of $\gamma$ parameters effectively absorbs the main effects due to the overparameterization, allowing the model to adapt to each specific combination without constraints.
+
+Model formulas incorporate interactions with an asterisk,
+\[
+\verb|blood pressure = gender + age + gender*age|,
+\]
+indicating that the effect of gender is contingent on age, and vice versa. For successful model fitting, each interaction combination must have sufficient replication to estimate the interaction effects; otherwise, the model may only fit the observed values without capturing the underlying relationships effectively.
+
+\subsubsection{Hypothesis tests}
+For models involving interactions, the hypothesis test for interaction terms can be stated as
+\[
+H_{0}: \gamma_{11} = \gamma_{12} = \cdots = \gamma_{k_{1} k_{2}} = 0,
+\]
+implying no interaction effect, thus reverting the model to its additive form. The statistical test used is the $F$-test, calculated as:
+\[
+F_{\mathrm{obs}} = \frac{(\mathrm{SS}_{\text{no interaction}} - \mathrm{SS}_{\text{with interaction}}) / (\mathrm{df}_{\text{no interaction}} - \mathrm{df}_{\text{with interaction}})}{\mathrm{SS}_{\text{with interaction}} / \mathrm{df}_{\text{with interaction}}},
+\]
+following an $F$ distribution. This setup compares a null model (without interaction) to a full model (with interaction).
+
+\paragraph{Hierarchical principle}
+
+If an interaction term is included in a model, lower order interactions and main effects of the variables involved in the interaction must also be included. This ensures the integrity of the model's structure and the validity of the statistical tests.
+
+For example, the model for blood pressure involving age and gender is:
+\[
+\verb|blood pressure = age + gender + age*gender|.
+\]
+Testing for the effect of age alone is not permissible while the interaction term is present, as this would contradict the inclusion of the interaction term, which asserts that the effect of age is conditional on gender.
+
+\subsubsection{Interactions between categorical and quantitative variables}
+Interactions between categorical and quantitative variables are modeled to determine if the effect of a quantitative variable differs across levels of a categorical variable. For instance, considering blood pressure affected by age (quantitative) and gender (categorical), the model can be represented as:
+\[
+\verb|blood pressure = age + gender + age * gender|
+\]
+This model implies two regression lines—one for each gender—with potentially different intercepts and slopes, thus allowing the effect of age on blood pressure to vary by gender.
+
+When testing for interaction, the null hypothesis posits no difference in the slopes for the quantitative variable across the groups of the categorical variable:
+\[
+H_0: \alpha_{\text{men}} = \alpha_{\text{women}}
+\]
+Rejecting this hypothesis indicates differing effects of the quantitative variable across categories, suggesting a significant interaction. This model's setup allows for comprehensive analysis by describing two dependent behaviors within a single framework.
 
 \end{document}
