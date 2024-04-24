@@ -2300,4 +2300,155 @@ H_0: \alpha_{\text{men}} = \alpha_{\text{women}}
 \]
 Rejecting this hypothesis indicates differing effects of the quantitative variable across categories, suggesting a significant interaction. This model's setup allows for comprehensive analysis by describing two dependent behaviors within a single framework.
 
+\section{Statistical inference in the binomial distribution}
+
+For $n$ trials, each having outcomes 0 or 1, denote $Z_{i}$ as the outcome of the $i$-th trial, with 1 being success and 0 failure. The outcomes follow:
+\[
+\mathrm{P}(Z_{i} = 1) = p, \quad \mathrm{P}(Z_{i} = 0) = 1-p
+\]
+All trials share the same distribution and are mutually independent.
+
+The sum of successes $Y = \sum_{i=1}^{n} Z_{i}$ in $n$ independent trials, follows a binomial distribution given by:
+\[
+\mathrm{P}(Y = y) = \binom{n}{y} p^{y} (1-p)^{n-y}, \quad y \in \{0,1, \ldots, n\}
+\]
+
+Expected value and variance for $Z_i$ are:
+\[
+\mathbb{E}(Z_{i}) = p, \quad \operatorname{Var}(Z_{i}) = p(1-p)
+\]
+For $Y$, these extend to:
+\[
+\mathbb{E}(Y) = np, \quad \operatorname{Var}(Y) = np(1-p)
+\]
+If $Y_1 \sim \operatorname{bin}(n_1, p)$ and $Y_2 \sim \operatorname{bin}(n_2, p)$, then $Y_1 + Y_2 \sim \operatorname{bin}(n_1 + n_2, p)$.
+
+For large $n$, the binomial distribution approaches a Gaussian distribution, particularly when both $np$ and $n(1-p)$ are at least 5, making the approximation suitable.
+
+\subsection{MLE for binomial proportion}
+
+The likelihood function for a binomial distribution with sample size $n=20$ is represented in a graph, illustrating the MLE under the alternative hypothesis $H_1$:
+\[
+\hat{p} = \frac{y}{n}
+\]
+For $H_0$, the MLE of $p$ is simply $p_0$.
+
+\paragraph{Distribution of MLE:}
+\[
+\hat{p} = \frac{Y}{n} \in \left\{0, \frac{1}{n}, \frac{2}{n}, \ldots, 1\right\}
+\]
+Probability of observing a specific $\hat{p}$:
+\[
+\mathrm{P}\left(\hat{p} = \frac{y}{n}\right) = \binom{n}{y} p^y (1-p)^{n-y}
+\]
+Thus, $n\hat{p} \sim \operatorname{Bin}(n, p)$, showing that the MLE $\hat{p}$ is the sample proportion.
+
+\paragraph{Properties of MLE:}
+\[
+\mathbb{E}(\hat{p}) = p, \quad \operatorname{Var}(\hat{p}) = \frac{p(1-p)}{n}
+\]
+These properties confirm that the MLE is unbiased and consistent.
+
+\subsection{Confidence intervals}
+
+A confidence interval (CI) for a parameter estimates a range where the true parameter value is likely to be found, with a given level of confidence, typically 95\%. The formal definition for a $95\%$ CI, $(l(Y), r(Y))$, is that it satisfies:
+\[
+P_{p}(l(Y) < p < r(Y)) = 0.95
+\]
+This implies that repeating the experiment multiple times would yield a CI containing the true parameter $p$ 95\% of the time. A CI can be constructed by inverting a test for a simple hypothesis, including all parameter values that would not be rejected by the test.
+
+\subsubsection{Wald Confidence Interval}
+The Wald CI is based on the asymptotic normality of the maximum likelihood estimator (MLE), $\hat{p}$. This interval is calculated using the z-score bounds:
+\[
+z_{\alpha / 2} < \frac{\hat{p} - p}{\sqrt{\widehat{\operatorname{Var}}(\hat{p})}} < z_{1 - \alpha / 2}
+\]
+which translates to:
+\[
+\hat{p} \pm 1.96 \times \text{SE}(\hat{p})
+\]
+where SE is the standard error of $\hat{p}$. However, this method has limitations:
+\begin{itemize}
+  \item It can produce values outside the interval $[0, 1]$.
+  \item It fails to provide an interval when $\hat{p} = 0$ or $\hat{p} = 1$.
+\end{itemize}
+
+\subsubsection{True Coverage of the CI}
+The actual coverage probability of a CI can be verified by summing binomial probabilities for different $Y$ values, each providing a CI. True coverage is assessed by:
+\begin{enumerate}
+  \item Calculating the CI for each observed $Y$.
+  \item Summing the probabilities of $Y$ values that yield a CI containing the true $p$.
+\end{enumerate}
+Due to the discrete nature of data, achieving exactly 95\% coverage is challenging, often resulting in conservative intervals.
+
+\subsubsection{Agresti-Coull Confidence Interval}
+The Agresti-Coull CI modifies the Wald CI by adjusting $\hat{p}$ to $\tilde{p}$:
+\[
+\tilde{p} = \frac{y + \frac{z_{1-\alpha/2}^2}{2}}{n + z_{1-\alpha/2}^2}
+\]
+This adjustment adds a pseudo-count to both success and failure categories, stabilizing variance estimates. The modified interval is:
+\[
+\tilde{p} \pm z_{1-\alpha/2} \sqrt{\frac{\tilde{p}(1 - \tilde{p})}{n + z_{1-\alpha/2}^2}}
+\]
+For a 95\% CI, this approach considers adding approximately 2 pseudo-observations to each count.
+
+\subsection{Hypothesis Testing: Simple vs Composite Hypotheses}
+In hypothesis testing, $H_0: p = p_0$ is a simple hypothesis because it specifies only one value for the parameter. The alternative hypothesis $H_1: 0 < p < 1$ is composite, covering a range of parameter values. In the context of the binomial distribution, to evaluate how extreme the observed data is under $H_0$, we calculate:
+\[
+\sum_{y: \mathrm{P}(Y=y) \leq \mathrm{P}(Y=y_{\text{obs}})} \mathrm{P}(Y=y)
+\]
+This calculation sums the probabilities of all outcomes as extreme or more extreme than the observed, and is utilized to determine the $p$-value in exact tests like the binom.test in R.
+
+\subsection{Likelihood Ratio Tests and Their Applications}
+Likelihood ratio tests assess how extreme data is by comparing the maximum likelihood estimates (MLEs) under the null hypothesis $H_0$ and the alternative hypothesis $H_1$. The likelihood ratio $Q(Y)$ is defined as:
+\[
+Q(Y) = \frac{L(\hat{p}_{0})}{L(\hat{p}_{1})}
+\]
+where $\hat{p}_{0}$ is the MLE under $H_0$ and $\hat{p}_{1}$ is the MLE under $H_1$. Values of $Q(Y)$ range between 0 and 1, with lower values indicating less support for $H_0$.
+
+To compute the test probability for data being at least as extreme as observed, we use:
+\[
+\mathrm{P}\left(Q(Y) \leq Q(y_{\text{obs}})\right) = \sum_{y: Q(y) \leq Q(y_{\text{obs}})} \mathrm{P}(Y=y)
+\]
+
+Alternatively, the likelihood ratio can be represented using the statistic:
+\[
+-2 \log \left(\frac{L(\hat{p}_{0})}{L(\hat{p}_{1})}\right)
+\]
+which ranges from 0 to $\infty$, with higher values indicating less support for $H_0$.
+
+Under $H_0$, this statistic approximately follows a $\chi^2$ distribution with degrees of freedom equal to the difference in parameters between $H_1$ and $H_0$ (Wilks' theorem). For the simple case where $H_0: p = p_0$ and $H_1: 0 < p < 1$, the degrees of freedom are 1.
+
+The chi-squared approximation is valid if the expected numbers of successes and failures are both at least 5.
+
+Likelihood-based confidence intervals can also be derived from these tests. Solving for $p_0$ where:
+\[
+-2 \log \left(\frac{L(\hat{p}_{0})}{L(\hat{p}_{1})}\right) > 3.84
+\]
+gives a 95\% confidence interval based on the chi-square distribution critical value for 1 degree of freedom (3.84), suggesting that the true proportion lies within specific bounds.
+
+\subsection{Confidence Interval for the Difference of Proportions}
+
+We consider two binomial distributions, \( Y_{1} \sim \operatorname{bin}(26, p_{1}) \) and \( Y_{2} \sim \operatorname{bin}(25, p_{2}) \), to analyze the difference in proportions \( p_{1} - p_{2} \). The estimated difference between the proportions is calculated as:
+\[
+\hat{p}_{1} - \hat{p}_{2} = 0.88 - 0.52 = 0.36
+\]
+This measure quantifies the discrepancy in success rates between the two scenarios represented by the binomial distributions.
+
+The confidence interval (CI) for the difference between two binomial proportions, $\hat{p}_{1}$ and $\hat{p}_{2}$, is given by:
+
+\[
+\hat{p}_{1} - \hat{p}_{2} \pm z_{\alpha / 2} \sqrt{\frac{\hat{p}_{1}(1-\hat{p}_{1})}{n_{1}} + \frac{\hat{p}_{2}(1-\hat{p}_{2})}{n_{2}}}
+\]
+
+This expression assumes the asymptotic normality of $\hat{p}_{1} - \hat{p}_{2}$, supported by the Central Limit Theorem (CLT) or the asymptotic normality of the maximum likelihood estimator (MLE). The sample proportions are modeled as normally distributed:
+
+\[
+\begin{aligned}
+\hat{p}_{1} &\approx N\left(p_{1}, \frac{p_{1}(1-p_{1})}{n_{1}}\right), \\
+\hat{p}_{2} &\approx N\left(p_{2}, \frac{p_{2}(1-p_{2})}{n_{2}}\right).
+\end{aligned}
+\]
+
+Given the independence of the samples, the sample proportions are jointly asymptotically normal, and their difference, as a linear transformation, also follows a normal distribution (delta method). This CI reflects the range within which the difference between the two proportions is expected to lie, with a specified level of confidence.
+
 \end{document}
