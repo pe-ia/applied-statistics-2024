@@ -1885,7 +1885,7 @@ The general procedure for conducting hypothesis tests involves:
     \item Defining the null and alternative hypotheses to address the scientific question.
     \item Selecting an appropriate test statistic, determining critical values, and identifying the statistic's distribution under the null hypothesis.
     \item Computing the $p$-value to decide on rejecting or not rejecting the hypothesis based on $\alpha$.
-    \item Translating the test's outcome to a conclusion relevant to the original question, including quantification of significant effects if applicable.
+    \item Translating the test's outcome to a conclusion relevant to the original question,including quantification of significant effects if applicable.
 \end{enumerate}
 
 This framework underscores the systematic approach required to effectively test hypotheses, encompassing selection of significance levels, hypothesis formulation, test statistic determination, $p$-value computation, and interpretation of results.
@@ -2450,5 +2450,404 @@ This expression assumes the asymptotic normality of $\hat{p}_{1} - \hat{p}_{2}$,
 \]
 
 Given the independence of the samples, the sample proportions are jointly asymptotically normal, and their difference, as a linear transformation, also follows a normal distribution (delta method). This CI reflects the range within which the difference between the two proportions is expected to lie, with a specified level of confidence.
+
+\section{Comparing binomal distributions and analysis of count data}
+
+\subsection{Difference in proportions}
+
+Considering the ability to identify pets by smell, we have data for dog and cat owners. The binomial distributions are given by $Y_{1} \sim \operatorname{bin}\left(26, p_{1}\right)$ and $Y_{2} \sim \operatorname{bin}\left(25, p_{2}\right)$ for dog and cat owners, respectively, representing correct identifications.
+
+\begin{center}
+\begin{tabular}{lcc}
+\hline
+ & Identified Correctly & Misidentified \\
+\hline
+Dog Owners & 23 & 3 \\
+Cat Owners & 13 & 12 \\
+\hline
+\end{tabular}
+\end{center}
+
+The estimated difference in probabilities of correct identification is calculated as:
+$$
+\hat{p}_{1} - \hat{p}_{2} = \frac{23}{26} - \frac{13}{25} = 0.88 - 0.52 = 0.36
+$$
+
+\subsubsection{Contextual Importance of Proportion Differences}
+In scenarios where the difference $p_{1} - p_{2}$ is the same, the relative significance can vary. For instance, a difference in adverse reaction probabilities between a drug and a placebo might be minimal numerically but substantial in practical implications.
+
+\subsubsection{Confidence Interval for the Difference of Proportions}
+The confidence interval for $\hat{p}_{1} - \hat{p}_{2}$, considering the binomial distributions approach normality with large sample sizes, is given by:
+
+$$
+\hat{p}_{1} - \hat{p}_{2} \pm z_{\alpha / 2} \sqrt{\frac{\hat{p}_{1} (1 - \hat{p}_{1})}{n_{1}} + \frac{\hat{p}_{2} (1 - \hat{p}_{2})}{n_{2}}}
+$$
+
+where $z_{\alpha / 2}$ is the critical value from the standard normal distribution for a chosen $\alpha$ level.
+
+Assuming $\hat{p}_{1}$ and $\hat{p}_{2}$ are approximations of normal distributions, they are represented as:
+$\begin{aligned}
+& \hat{p}_{1} \sim N\left(p_{1}, \frac{p_{1}(1-p_{1})}{n_{1}}\right), \\
+& \hat{p}_{2} \sim N\left(p_{2}, \frac{p_{2}(1-p_{2})}{n_{2}}\right).
+\end{aligned}$
+
+Since the samples are independent, the difference $\hat{p}_{1} - \hat{p}_{2}$ is also normally distributed, validated by the Central Limit Theorem and the properties of linear transformations.
+
+\subsection{The multinomial distribution}
+
+Consider $n$ trials, each with $c$ possible outcomes. Each trial has a probability $p_j$ of resulting in outcome $j$. If $Y_j$ counts the occurrences of outcome $j$, then $(Y_1, \ldots, Y_c)$ follows a multinomial distribution, expressed as:
+$$
+p(y_1, \ldots, y_c) = \frac{n!}{y_1! \cdots y_c!} \prod_{j=1}^{c} p_j^{y_j},
+$$
+with $\sum_{j=1}^{c} y_j = n$ and $\sum_{j=1}^{c} p_j = 1$.
+
+For two categories, $(Y_1, Y_2)$ simplifies to a binomial distribution for $Y_1$.
+
+Each trial outcome $Z_i$ is represented as:
+$$
+Z_i = (Z_{i1}, \ldots, Z_{ic}), \quad Z_{ij} = \begin{cases} 1, & \text{if outcome is } j, \\ 0, & \text{otherwise.} \end{cases}
+$$
+The random variable $Y_j = \sum_{i=1}^{n} Z_{ij}$ counts occurrences of category $j$. The expected count for category $j$ is $\mathbb{E}Y_j = n p_j$.
+
+\subsubsection{Properties of the Multinomial Distribution}
+
+\begin{itemize}
+    \item The sum of multinomially distributed variables is multinomial if the probability vectors are identical.
+    \item Merging categories also yields a multinomial distribution; probabilities of merged categories are summed.
+    \item Counts for a single category follow a binomial distribution.
+\end{itemize}
+
+\subsubsection{Multinomial Likelihood Function}
+The MLE for proportions $p_1, \ldots, p_c$ is $\hat{p}_j = \frac{n_j}{n}$. Maximization of the log-likelihood function
+$$
+\ell(p) = \sum_{i=1}^{c} n_i \log(p_i)
+$$
+is subject to the constraint $\sum p_j = 1$.
+
+\subsubsection{Pearson Chi-Squared Test}
+The Pearson chi-squared statistic for testing $H_0: p = p^0$ is:
+$$
+X^2 = \sum_{j=1}^{c} \frac{(O_j - E_j)^2}{E_j} = \sum_{j=1}^{c} \frac{(Y_j - n p_j^0)^2}{n p_j^0},
+$$
+where $O_j$ is the observed count and $E_j$ is the expected count under $H_0$. Small $X^2$ values indicate a good fit with $H_0$.
+
+\subsubsection{Example: Mendelian Inheritance}
+Mendel's data and theoretical proportions under $H_0$:
+$$
+H_0: p = \left(\frac{9}{16}, \frac{3}{16}, \frac{3}{16}, \frac{1}{16}\right),
+$$
+yield a Pearson statistic $X^2 = 0.470$ with a high $p$-value, suggesting a good fit with Mendelian predictions.
+
+\section{Two-way contingency tables}
+
+Subjects are classified based on two criteria into categories $\{1, \ldots, R\}$ and $\{1, \ldots, C\}$. The resulting contingency table records frequency counts as shown below:
+\begin{center}
+\begin{tabular}{c|cccc|c}
+ & Column 1 & Column 2 & $\cdots$ & Column C & Total \\
+\hline
+Row 1 & $y_{11}$ & $y_{12}$ & $\cdots$ & $y_{1 C}$ & $n_{1}$ \\
+Row 2 & $y_{21}$ & $y_{22}$ & $\cdots$ & $y_{2 C}$ & $n_{2}$ \\
+$\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ \\
+Row R & $y_{R 1}$ & $y_{R 2}$ & $\cdots$ & $y_{R C}$ & $n_{R}$ \\
+\hline
+Total &  &  &  &  & $n$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Sampling schemes for contingency tables}
+For example, studying the connection between seat-belt use and accident severity yields a contingency table summarized as follows:
+\begin{center}
+\begin{tabular}{lll}
+Seat-belt use & Fatality & Nonfatality \\
+\hline
+Yes &  &  \\
+No &  &  \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Multinomial Sampling with a Fixed Overall Total}
+Sample 200 police records, classifying each by fatality and seat-belt usage. The counts $(Y_{11}, Y_{12}, Y_{21}, Y_{22})$ are distributed as follows:
+\[
+(Y_{11}, Y_{12}, Y_{21}, Y_{22}) \sim \operatorname{Multinom}(200, p_{11}, p_{12}, p_{21}, p_{22})
+\]
+\[
+p(y_{11}, y_{12}, y_{21}, y_{22})=\binom{200}{y_{11}, \ldots, y_{22}} \prod_{r=1}^{2} \prod_{j=1}^{2} p_{r j}^{y_{r j}}
+\]
+
+\subsubsection{Independent Multinomial Sampling with Fixed Row Totals}
+Assign 100 subjects to wear seat-belts and 100 not to, and record fatality outcomes. Sampling within each row is given by:
+\[
+(Y_{r 1}, Y_{r 2}) \sim \operatorname{Multinom}(100, p_{r 1}, p_{r 2})
+\]
+\[
+p(y_{11}, y_{12}, y_{21}, y_{22})=\prod_{r=1}^{2}\left\{\binom{100}{y_{r 1}, y_{r 2}} \prod_{j=1}^{2} p_{r j}^{y_{r j}}\right\}
+\]
+
+\subsubsection{Independent Multinomial Sampling with Fixed Column Totals}
+Sample 100 records from fatal and 100 from non-fatal accidents to check seat-belt usage. This setup also involves independent multinomial distributions based on fixed column totals.
+
+\subsection{Tests in a Two-Way Table}
+Two primary types of tests are conducted on two-way contingency tables:
+
+\begin{enumerate}
+    \item \textbf{Test for Homogeneity:} This test is used when there are several populations, each classified according to the same categorical variable. The question it addresses is whether the $R$ different multinomial distributions share a common probability vector across these classifications.
+    
+    \item \textbf{Test for Independence:} This test applies when a single sample is classified according to two criteria (rows and columns). It investigates whether the probabilities of the cells (joint probabilities) are products of their corresponding row and column probabilities.
+\end{enumerate}
+
+Both tests typically employ the chi-squared statistic to determine if observed frequencies differ significantly from expected frequencies under the hypothesis of homogeneity or independence.
+
+\subsubsection{Independence of Categorical Variables}
+The principle of independence in a contingency table can be summarized as follows:
+\[
+\mathrm{P}(\{\text{Row } r\} \cap \{\text{Column } j\}) = \mathrm{P}(\{\text{Row } r\}) \mathrm{P}(\{\text{Column } j\})
+\]
+This equation means that the joint probability of an observation falling into a specific row and column is the product of the marginal probabilities of that row and column, assuming independence.
+
+Alternatively, independence can be expressed in terms of conditional probabilities:
+\[
+\mathrm{P}(\{\text{Column } j\} \mid \{\text{Row } r\}) \text{ is consistent across all rows}
+\]
+This implies that the probability of falling into a specific column, given any row, is the same, which would signify independence between the row and column categorizations.
+
+In cases of independent multinomial sampling, where each row of the contingency table represents a different multinomial distribution (with the row total fixed by design), the tests for comparing binomial proportions are applicable. This scenario generally does not lend itself to discussing row probabilities directly due to their predetermined nature.
+
+\subsection{Pearson Chi-Squared Test in a Two-Way Table}
+The Pearson Chi-Squared test is designed to measure the discrepancy between observed counts and expected counts in a contingency table under the null hypothesis $H_0$, which typically posits independence or homogeneity across groups. The test statistic is defined as:
+\[
+X^{2}=\sum_{r=1}^{R} \sum_{j=1}^{C} \frac{(O_{r j}-E_{r j})^2}{E_{r j}}
+\]
+
+where $O_{r j}$ represents the observed count in cell $(r, j)$, and $E_{r j}$ is the expected count in cell $(r, j)$ assuming $H_0$ is true. Smaller values of $X^2$ suggest a closer fit between the observed data and the expectations under $H_0$.
+
+The chi-squared approximation is valid if each expected cell count is at least 5.
+
+\subsubsection{Asymptotic Distribution of the Pearson Statistic}
+Under the null hypothesis $H_0$, the test statistic $X^2$ approximately follows a chi-squared distribution $\chi_{\mathrm{df}}^2$, where the degrees of freedom, $\mathrm{df}$, are calculated as:
+\[
+\mathrm{df} = (R-1)(C-1)
+\]
+This degrees of freedom formula accounts for the reduction in parameters when moving from the alternative hypothesis $H_1$ (no restrictions on cell probabilities) to the null hypothesis $H_0$ (independent categories).
+
+\section{Logistic regression}
+
+\subsection{Comparing Probabilities, Odds, and Risks}
+
+Two common methods for comparing probabilities, $p_{1}$ and $p_{2}$, are:
+
+\begin{itemize}
+  \item \textbf{Difference in Probability}: $p_{1}-p_{2}$
+  \begin{itemize}
+    \item A difference of zero indicates equal probabilities.
+  \end{itemize}
+  
+  \item \textbf{Relative Risk}: $p_{1} / p_{2}$
+  \begin{itemize}
+    \item A relative risk of 1 implies equal probabilities.
+  \end{itemize}
+\end{itemize}
+
+An alternative measure of risk is the odds of an event $A$, defined as:
+$$
+\text{Odds of event } A = \frac{\mathrm{P}(A)}{1 - \mathrm{P}(A)} \in [0, \infty]
+$$
+When $\mathrm{P}(A) = 1$, the odds are defined as $\infty$. 
+
+For instance, if the probability of boys born in every 100 births is 51, then:
+$$
+\text{Odds of a boy} = \frac{0.51}{0.49} = 1.04
+$$
+
+\subsubsection{Comparison of Risks: Odds Ratio}
+The odds ratio ($\theta$) compares two group-specific odds of an event:
+$$
+\theta = \frac{\frac{p_{1}}{1-p_{1}}}{\frac{p_{2}}{1-p_{2}}} = \frac{p_{1}\left(1-p_{2}\right)}{p_{2}\left(1-p_{1}\right)}
+$$
+$\hat{\theta}$ can be estimated directly from $\hat{p}_{1}$ and $\hat{p}_{2}$.
+
+\subsubsection{Confidence Interval for Log Odds Ratio}
+A confidence interval for the log odds ratio in a $2 \times 2$-table is given by:
+$$
+\log \left(\frac{y_{11} y_{22}}{y_{12} y_{21}}\right) \pm z_{\alpha / 2} \sqrt{\frac{1}{y_{11}}+\frac{1}{y_{12}}+\frac{1}{y_{21}}+\frac{1}{y_{22}}}
+$$
+This is assuming multinomial or independent multinomial sampling. A confidence interval for the odds ratio can be obtained by backtransformation:
+$$
+\log \theta \in (l, r) \Leftrightarrow \theta \in (\exp (l), \exp (r))
+$$
+If there are any zero counts ($n_{ij}=0$), the Wald interval does not exist. An ad-hoc approach is to add a small number (usually 0.5) to all cells.
+
+\subsection{Logistic regression models}
+
+Let $Y_{1}, \ldots, Y_{n}$ be independent random variables with
+$$
+Y_{i} \sim \operatorname{bin}\left(1, p_{i}\right)
+$$
+where each $Y_i$ represents a binary outcome and $p_{i}$ denotes the success probability associated with "trial $i$". These trials are independent but not necessarily identically distributed.
+
+The success probability $p_{i}$ is modeled as a function of the explanatory variables associated with "trial $i$". Probabilities are modeled indirectly by assuming that the log-odds are linear in the parameters:
+$$
+\log \left(\text { Odds of success }_{i}\right) = \alpha+\beta_{1} x_{i 1}+\cdots+\beta_{d} x_{i d}
+$$
+
+The logit function, denoted as $\operatorname{logit}\left(p_{i}\right)$, transforms probabilities to log-odds:
+$$
+\operatorname{logit}\left(p_{i}\right) = \log \left(\frac{p_{i}}{1-p_{i}}\right)
+$$
+A linear model for the log-odds corresponds to probabilities modeled as:
+$$
+p_{i} = \operatorname{logit}^{-1}\left(\alpha+\beta_{1} x_{i 1}+\cdots+\beta_{d} x_{i d}\right)=\frac{\exp \left(\alpha+\beta_{1} x_{i 1}+\cdots+\beta_{d} x_{i d}\right)}{1+\exp \left(\alpha+\beta_{1} x_{i 1}+\cdots+\beta_{d} x_{i d}\right)}
+$$
+
+\subsubsection{Example: Male Moths}
+
+In an experiment, 120 male moths were subjected to an insecticide. The logit model for the probability of death is:
+$$
+\log \left(\frac{p_{i}}{1-p_{i}}\right) = \alpha + \beta \cdot \operatorname{dose}_{i}
+$$
+
+The estimated log-odds that moth $i$ dies are given by:
+$$
+\log \left(\frac{p_{i}}{1-p_{i}}\right) = -1.9277 + 0.2972 \cdot \operatorname{dose}_{i}
+$$
+
+$\hat{\alpha} = -1.9277$ represents the log-odds that a moth with a dose of 0 dies. The odds of a moth dying, given no insecticide, are $\exp (-1.9277) = 0.1455$, corresponding to a probability of 0.127.
+
+$\hat{\beta} = 0.2972$ is the log-odds ratio comparing the odds of dying for moths with doses differing by one unit.
+
+In conclusion, for every unit increase in dose, the odds of dying increase by approximately $35\%$, with an odds ratio of $\exp (\hat{\beta}) = 1.346$.
+
+\subsection{Logistic Likelihood Function and MLE}
+
+The $n$ observations are independent and binomially distributed with $p_{i}$ depending on the unknown parameters and the given values of the explanatory variables:
+$$
+\begin{aligned}
+L\left(\alpha, \beta_{1}, \ldots, \beta_{d}\right) & =\prod_{i=1}^{n} p_{i}^{y_{i}}\left(1-p_{i}\right)^{1-y_{i}} \\
+& =\prod_{i=1}^{n}\left(\frac{\exp (\alpha+\boldsymbol{\beta} \boldsymbol{x})}{1+\exp (\alpha+\boldsymbol{\beta} \boldsymbol{x})}\right)^{y_{i}}\left(1-\frac{\exp (\alpha+\boldsymbol{\beta} \boldsymbol{x})}{1+\exp (\alpha+\boldsymbol{\beta} \boldsymbol{x})}\right)^{1-y_{i}}
+\end{aligned}
+$$
+The Maximum Likelihood Estimation (MLE) is found by an iterative algorithm; there is no closed-form solution as in Gaussian models.
+
+Confidence intervals for parameters can be based on the asymptotic normality of the MLE. Parameterization can often be cleverly done to express a quantity of interest directly as a parameter.
+
+The estimated variance matrix for the MLE (either observed information matrix or Fisher information) is typically available in R. It can be used to get the standard errors of complex functions of the parameters.
+
+In some situations, the MLE does not exist, such as complete separation. It's challenging to reason about separation, but some red flags include oddly extreme parameter estimates and extremely large standard errors.
+
+\subsection{Likelihood Ratio Tests}
+
+Likelihood-ratio tests are more general than Wald tests and usually more reliable. They can compare any two nested models:
+$$
+-2 \log \left(\frac{L_{0}}{L_{\text {full }}}\right)=2\left(\log \left(L_{\text {full }}\right)-\log \left(L_{0}\right)\right) \approx \chi_{\left|H_{\text {full }}\right|-\left|H_{0}\right|}^{2}
+$$
+Here, the likelihood has been maximized under both models. Degrees of freedom are computed as the difference in the number of parameters between the two models.
+
+For logistic regression models, typically a shifted version of the log-likelihood, the deviance, is used. The drop in deviance between two models is the same as the drop in log-likelihood.
+
+\section{Monte Carlo}
+
+Simulation serves as a powerful probabilistic tool, often used for approximating probabilities and statistical moments when analytical solutions are complex or unavailable. For example, the Monty Hall problem's optimal strategy—switching doors—can be validated by simulating thousands of games, demonstrating a success rate of about $2/3$. Similarly, if the mean and variance of a random variable $X$ are unknown, but sampling from $X$ is possible, they can be estimated by:
+\[
+E(X) \approx \bar{X}_n = \frac{1}{n}(X_1 + \cdots + X_n),
+\]
+\[
+\operatorname{Var}(X) \approx \frac{1}{n-1} \sum_{j=1}^{n} (X_j - \bar{X}_n)^2.
+\]
+These approximations improve with larger sample sizes $n$, facilitated by the law of large numbers. This approach, called the Monte Carlo method, relies on the ability to generate random samples efficiently.
+
+A challenge arises when the target distribution, such as a Beta distribution with density $f(x) \propto x^{3.1}(1-x)^{4.2}$ for $0 < x < 1$, does not suggest an easy sampling strategy. Though theoretically feasible using transformations from a $\operatorname{Unif}(0,1)$ random variable, practical implementation, like computing or inverting the cumulative distribution function (CDF), can be infeasible.
+
+Many scientific applications involve even more complex distributions, where normalizing constants of the density functions are unknown. Markov chain Monte Carlo (MCMC) techniques, however, allow simulation from these distributions using Markov chains. By designing a Markov chain with a desired stationary distribution $\mathbf{s}$, one can approximate $\mathbf{s}$ by simulating the chain over a long period.
+
+Two primary MCMC methods are the Metropolis-Hastings algorithm and Gibbs sampling.
+
+\subsection{Metropolis-Hastings Algorithm}
+The Metropolis-Hastings algorithm modifies any irreducible Markov chain to achieve a desired stationary distribution by selectively accepting or rejecting the proposed transitions based on specific probabilities. This ensures that the resultant chain retains the target distribution as its stationary distribution.
+
+\subsubsection{Algorithm Outline}
+Given:
+\begin{itemize}
+    \item A desired stationary distribution $\mathbf{s} = (s_1, \ldots, s_M)$ on state space $\{1, \ldots, M\}$,
+    \item An original Markov chain transition matrix $P = (p_{ij})$,
+\end{itemize}
+
+the Metropolis-Hastings algorithm operates as follows:
+\begin{enumerate}
+    \item Start from any state $X_0$.
+    \item At each step $n$, from current state $X_n = i$:
+    \begin{enumerate}
+        \item Propose a new state $j$ using the transition probabilities from $P$.
+        \item Calculate the acceptance probability:
+        \[
+        a_{ij} = \min \left(\frac{s_j p_{ji}}{s_i p_{ij}}, 1\right).
+        \]
+        \item Accept the move to state $j$ with probability $a_{ij}$, otherwise remain in state $i$.
+    \end{enumerate}
+    \item Set $X_{n+1}$ based on the acceptance step.
+\end{enumerate}
+
+This procedure modifies $P$ to a new transition matrix $Q$ of the Metropolis-Hastings chain, where:
+\[
+q_{ij} = p_{ij} a_{ij} \quad \text{and} \quad q_{ii} = 1 - \sum_{j \neq i} q_{ij}.
+\]
+The algorithm assures that $q_{ij}$ and $q_{ji}$ are either both zero or both non-zero, maintaining balance and ensuring reversibility under the stationary distribution $\mathbf{s}$.
+
+\subsubsection{Properties}
+\begin{itemize}
+    \item \textbf{Reversibility}: This chain satisfies the detailed balance condition, $s_i q_{ij} = s_j q_{ji}$, confirming $\mathbf{s}$ as the stationary distribution.
+    \item \textbf{Flexibility}: Works for any given $P$ on the same state space without needing the normalizing constant for $\mathbf{s}$.
+    \item \textbf{Practical Considerations}: The choice of $P$ (proposal distribution) critically affects the convergence speed of the chain. Effective proposal distributions balance between high acceptance rates and the ability to explore the state space efficiently.
+\end{itemize}
+
+\subsubsection{Implementation}
+For effective implementation:
+\begin{enumerate}
+    \item Choose an initial state that either represents a typical state or diversely explores potential states.
+    \item Ensure the proposal distribution $P$ is well-designed to suggest feasible transitions.
+    \item Run the chain for a sufficient number of steps to approximate convergence to the stationary distribution.
+\end{enumerate}
+
+This algorithm extends beyond discrete state spaces to continuous distributions, accommodating complex models in various scientific fields.
+
+\subsection{Gibbs Sampling}
+Gibbs sampling is an MCMC method particularly useful for sampling from a joint distribution by iteratively updating each variable from its conditional distribution while holding others fixed. This method is efficient when conditional distributions are straightforward to sample from.
+
+\subsubsection{Systematic Scan Gibbs Sampler}
+For discrete random variables $X$ and $Y$ with a joint probability mass function (PMF) $p_{X,Y}(x,y)$, the systematic scan Gibbs sampler updates variables in a fixed order:
+\begin{enumerate}
+    \item Draw $x_{n+1}$ from the conditional distribution $P(X \mid Y = y_n)$.
+    \item Draw $y_{n+1}$ from the conditional distribution $P(Y \mid X = x_{n+1})$.
+\end{enumerate}
+The chain $(X_0, Y_0), (X_1, Y_1), \ldots$ converges to the stationary distribution $p_{X,Y}$.
+
+\subsubsection{Random Scan Gibbs Sampler}
+Similar to the systematic approach but selects the variable to update at random:
+\begin{enumerate}
+    \item Randomly choose a variable.
+    \item Update the chosen variable from its conditional distribution based on the current state of the other variable.
+\end{enumerate}
+This also ensures convergence to the joint distribution $p_{X, Y}$.
+
+\subsubsection{Generalization to Higher Dimensions}
+Gibbs sampling extends to higher dimensions where each variable of a $d$-dimensional vector is updated in sequence from its conditional distribution given the current values of all other variables. Both systematic and random update orders are applicable.
+
+\subsubsection{Comparison with Metropolis-Hastings}
+Gibbs sampling differs from Metropolis-Hastings by focusing on conditional distributions without requiring acceptance probabilities. It is a special case of Metropolis-Hastings with a 100\% acceptance rate, simplifying implementation by eliminating the need for proposal distributions.
+
+\subsubsection{Proof of Convergence}
+Gibbs sampling is proved to converge under the framework of Metropolis-Hastings. For example, in a two-variable setup, transitions between states that involve updating one variable while keeping the other fixed always have an acceptance probability of 1, satisfying the Metropolis-Hastings condition for acceptance and ensuring the sampler converges to the correct stationary distribution.
+
+\subsubsection{Applications}
+Gibbs sampling is suited for complex models where direct sampling from the joint distribution is challenging but sampling from conditional distributions is feasible. It is commonly used in Bayesian statistics for updating posterior distributions of model parameters.
+
+\subsubsection{Practical Implementation}
+\begin{itemize}
+    \item Initialize all variables.
+    \item Iteratively update each variable from its conditional distribution.
+    \item After a burn-in period, collect samples to approximate the joint distribution or compute statistics such as means or variances.
+\end{itemize}
+
+This algorithm is particularly effective in scenarios where the joint distribution is known only up to a normalizing constant, as each step involves conditioning on known quantities.
 
 \end{document}
